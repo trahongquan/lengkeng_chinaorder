@@ -1,0 +1,227 @@
+/*Body*/
+
+body {
+    /*background: url("../images/login_bg.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;*/
+    background: url("../images/login_bg.jpg") no-repeat fixed center / cover;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    color: #FFF;
+    font-family: 'Quicksand', sans-serif;
+    backdrop-filter: blur(5px); /* Áp dụng hiệu ứng mờ */
+    -webkit-backdrop-filter: blur(5px); /* Áp dụng hiệu ứng mờ (Safari) */
+}
+
+body,
+p {
+    font-family: "Montserrat";
+    font-weight: normal;
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+
+.nav-style-megamenu > li.nav-item .nav-link {
+    color: #000e3c;
+    text-transform: capitalize;
+    font-size: 16px;
+    line-height: 20px;
+    letter-spacing: 0px;
+}
+.big-banner:hover {
+    animation: blink 1s infinite;
+}
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+    scrollbar-width: auto;
+    scrollbar-color: #b5a1ce #b1c8ec;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 14px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #b1c8ec;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #b5a1ce;
+    border-radius: 15px;
+    border: 2px groove #cc8ad0;
+}
+.quick-link {
+    background-color: rgba(255, 255, 255, 0.6);
+    padding: 10px;
+}
+
+.quick-link a {
+    color: #000;
+    margin-left: 230px;
+    text-decoration: none;
+}
+
+/* Điều chỉnh CSS dựa trên kích thước màn hình */
+@media screen and (max-width: 768px) {
+    .quick-link {
+        padding: 5px;
+    }
+
+    .quick-link a {
+        margin-left: 150px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .quick-link {
+        padding: 2px;
+    }
+
+    .quick-link a {
+        margin-left: 50px;
+    }
+}
+
+.logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 15%;
+}
+
+@media screen and (max-width: 768px) {
+    .logo {
+        width: 5%;
+    }
+}
+@media screen and (max-width: 480px) {
+    .logo {
+        display: none;
+    }
+}
+header{
+    background-color: transparent;
+}
+
+/************************************************/
+                /* Dark - Light */
+/***********************************************/
+
+@import url("https://fonts.googleapis.com/css?family=Lora:400,400i,700");
+:root {
+    --imgBody: url("../images/login_bg.jpg") no-repeat fixed center / cover;
+    --white: white;
+    --black: black;
+    --gray: #fafafa;
+    --header: rgba(255,255,255,0.6);
+    --header-item: #007bff;
+}
+
+[data-theme=dark] {
+    --imgBody: rgba(33, 33, 33, 0.89);
+    --white: rgba(33, 33, 33, 0.89);
+    /*--white: url("../images/login_bg.jpg") no-repeat fixed center / cover;*/
+    --black: white;
+    --gray: black;
+    --header: rgba(55, 98, 86, 0.6);
+    --header-item: rgba(33, 33, 33, 0.89);
+}
+
+.title + p {
+    color: var(--black);
+    font-size: 20px;
+}
+
+.theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 12em;
+    right: 2em;
+    z-index: 1000;
+}
+
+.theme-switch {
+    display: inline-block;
+    height: 34px;
+    position: relative;
+    width: 60px;
+}
+
+.theme-switch input {
+    display: none;
+}
+
+.slider {
+    /*background-color: #999;*/
+    background-color: transparent;
+    /*background-color: rgba(255,255,255,0.6);*/
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: 0.4s;
+}
+
+.slider:before {
+    background-color: rgba(217, 248, 255, 0.8);
+    bottom: 1.9px;
+    content: "";
+    height: 30px;
+    left: 0px;
+    position: absolute;
+    transition: 0.4s;
+    width: 30px;
+}
+
+input:checked + .slider {
+    /*background-color: #eee;*/
+    background-color: transparent;
+}
+
+input:checked + .slider:before {
+    background-color: rgba(0, 0, 0, 0.8);
+    transform: translateX(31px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+.theme-switch .moon,
+.theme-switch .sun {
+    display: inline-block;
+    width: 28px;
+    /*height: 16px;*/
+    vertical-align: middle;
+}
+.theme-switch .moon{margin-top: 3px}
+.theme-switch .sun {margin-top: 2px}
+
+body{
+    background: var(--imgBody);
+    color: var(--black);
+}
+.lab-card, .machine-block{
+    background: var(--white);
+    color: var(--black);
+}
+.nav-bar-header{
+    background: var(--header);
+    color: var(--black);
+}
+.header-item, .header-item > .card-header{
+    background: var(--header-item);
+}
