@@ -12,13 +12,13 @@ error.path=/error
 spring.data.jpa.repository.packages=com.shoponline.chinaorder.dao
 spring.data.jpa.entity.packages-to-scan=com.shoponline.chinaorder.entity
 
-app.datasource.jdbc-url= jdbc:mysql://localhost:3306/chinaorder
-app.datasource.username= root
-app.datasource.password= 123456
 
-security.datasource.jdbc-url= jdbc:mysql://localhost:3306/chinaorder
+security.datasource.jdbc-url= jdbc:mysql://mysql-container-chinaorder:3306/chinaorder
+app.datasource.jdbc-url= jdbc:mysql://mysql-container-chinaorder:3306/chinaorder
 security.datasource.username= root
-security.datasource.password= 123456
+security.datasource.password= root
+app.datasource.username= root
+app.datasource.password= root
 
 spring.jpa.hibernate.use-new-id-generator-mappings=false
 spring.jpa.properties.hibernate.id.new_generator_mappings=false
@@ -32,3 +32,5 @@ spring.jpa.show-sql=true
 logging.level.org.hibernate.jpa.internal.util.LogHelper=ERROR
 
 spring.mvc.dispatch-options-request=true
+
+

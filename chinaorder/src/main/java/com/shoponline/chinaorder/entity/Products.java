@@ -1,0 +1,33 @@
+package com.shoponline.chinaorder.entity;
+
+import lombok.Data;
+import javax.persistence.*;
+
+@Data
+@Entity
+@Table(name = "products")
+public class Products {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    private String productName;
+
+    @ManyToOne
+    @JoinColumn(name = "product_cat_id")
+    private Categories category;
+
+    @ManyToOne
+    @JoinColumn(name = "product_brand_id")
+    private Brands brand;
+
+    @ManyToOne
+    @JoinColumn(name = "product_supplier_id")
+    private Supplier supplier;
+
+    @ManyToOne
+    @JoinColumn(name = "unit_id")
+    private Unit unit;
+
+    private String productDesc;
+}

@@ -9,7 +9,7 @@ public interface UserService {
 
     Users findByUsername(String username);
 
-    Users findByPeopleId(int id);
+//    Users findByPeopleId(int id);
 
     List<Users> getAllUsers();
 

@@ -20,7 +20,7 @@ services:
       - mysql-container-chinaorder
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     container_name: web-container-chinaorder
     environment:
       - DB_PORT=3306

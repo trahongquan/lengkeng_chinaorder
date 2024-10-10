@@ -364,17 +364,17 @@ CREATE TABLE `products` (
   `product_name` varchar(255) NOT NULL,
   `product_cat_id` int(11) NOT NULL,
   `product_brand_id` int(11) DEFAULT NULL,
-  `product_supploer_id` int(11) DEFAULT NULL,
+  `product_supplier_id` int(11) DEFAULT NULL,
   `unit_id` int(11) NOT NULL,
   `product_desc` text,
   PRIMARY KEY (`id`),
   KEY `fk_product_cat_idx` (`product_cat_id`),
   KEY `fk_product_brand_idx` (`product_brand_id`),
-  KEY `fk_product_supplier_idx` (`product_supploer_id`),
+  KEY `fk_product_supplier_idx` (`product_supplier_id`),
   KEY `fk_unit_id_product_unit_idx` (`unit_id`),
   CONSTRAINT `fk_product_brand` FOREIGN KEY (`product_brand_id`) REFERENCES `brands` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_product_cat` FOREIGN KEY (`product_cat_id`) REFERENCES `categories` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_product_supplier` FOREIGN KEY (`product_supploer_id`) REFERENCES `supplier` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_product_supplier` FOREIGN KEY (`product_supplier_id`) REFERENCES `supplier` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_unit_id_product_unit` FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -590,4 +590,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-10-09 14:59:08
+-- Dump completed on 2024-10-10 11:56:59

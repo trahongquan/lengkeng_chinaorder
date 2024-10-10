@@ -20,10 +20,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username);
     }
 
-    @Override
-    public Users findByPeopleId(int id){
-        return userRepository.findByPeopleid(id);
-    }
+//    @Override
+//    public Users findByPeopleId(int id){
+//        return userRepository.findByPeopleid(id);
+//    }
 
     @Override
     public List<Users> getAllUsers() {
