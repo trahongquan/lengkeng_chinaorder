@@ -22,7 +22,9 @@ public class Order {
     @JoinColumn(name = "custormer_id")
     private People customer;
 
-    private String status;
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    private Status status;
 
     @Temporal(TemporalType.DATE)
     private Date creationDate;

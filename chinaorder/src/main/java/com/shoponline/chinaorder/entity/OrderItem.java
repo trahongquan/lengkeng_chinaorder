@@ -27,7 +27,9 @@ public class OrderItem {
 
     private BigDecimal costPrice;
     private BigDecimal sellingPrice;
-    private BigDecimal discount;
+    @ManyToOne
+    @JoinColumn(name = "voucher_id")
+    private Voucher Voucher;
     private BigDecimal discountedPrice;
     private int quantity;
     private BigDecimal amount;

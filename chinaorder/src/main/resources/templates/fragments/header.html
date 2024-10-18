@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thyme leaf-extras-springsecurity5">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--<header>-->
+    <div class="app-header header-shadow">
+        <div class="app-header__logo ">
+            <div class="logo-src">
+            </div>
+            <div class="header__pane ml-auto">
+                <div>
+                    <button type="button" class="hamburger close-sidebar-btn hamburger--elastic"
+                            data-class="closed-sidebar">
+                        <span class="hamburger-box">
+                            <span class="hamburger-inner"></span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="app-header__mobile-menu ">
+            <div>
+                <button type="button" class="hamburger hamburger--elastic mobile-toggle-nav">
+                    <span class="hamburger-box">
+                        <span class="hamburger-inner"></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+        <div class="app-header__menu ">
+                <span>
+                <button type="button" class="btn-icon btn-icon-only btn btn-primary btn-sm mobile-toggle-header-nav">
+                    <span class="btn-icon-wrapper">
+                        <i class="fa fa-ellipsis-v fa-w-6"></i>
+                    </span>
+                </button>
+                </span>
+        </div>
+        <div class="app-header__content ">
+            <!--app-header-left-->
+            <div class="app-header-left">
+                <div class="search-wrapper">
+                    <div class="input-holder">
+                        <input type="text" class="search-input" placeholder="Type to search">
+                        <button class="search-icon"><span></span></button>
+                    </div>
+                    <button class="close"></button>
+                </div>
+                <ul class="header-megamenu nav">
+                    <li>
+                        <a class="nav-link" th:href="'/Lab/admin/Dashboard?username='+${#authentication.name}" target="_blank">
+                            <i class="nav-link-icon pe-7s-settings"></i> Trang Admin
+                        </a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="/Lab?RedirectLabAdmin=false" target="_blank">
+                            <i class="nav-link-icon pe-7s-home"></i> Đặt phòng Lab
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!--app-header-right-->
+            <div class="app-header-right">
+                <!--<div class="header-dots" >
+                    <div class="theme-switch-wrapper" >
+                        <label class="theme-switch" for="checkbox" style="background-color: rgba(255,255,255,0.2); border-radius: 34px; padding: 1.5px">
+                            <div class="d-flex justify-content-between flex-row">
+                                <div class="icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="moon text-warning">
+                                        <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <div class="icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="sun text-warning">
+                                        <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <input type="checkbox" id="checkbox" />
+                            <div class="slider round"></div>
+                        </label>
+                    </div>
+                </div>-->
+                <div class="header-dots">
+                    <div class="dropdown">
+                        <button type="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown"
+                                class="p-0 mr-2 btn btn-link">
+                            <span class="icon-wrapper icon-wrapper-alt rounded-circle">
+                                <span class="icon-wrapper-bg bg-danger"></span>
+                                <i class="icon text-danger icon-anim-pulse ion-android-notifications"></i>
+                                <span class="badge badge-dot badge-dot-sm badge-danger">Notifications</span>
+                            </span>
+                        </button>
+                        <div tabindex="-1" role="menu" aria-hidden="true"
+                             class="dropdown-menu-xl rm-pointers dropdown-menu dropdown-menu-right">
+                            <div class="dropdown-menu-header mb-0">
+                                <div class="dropdown-menu-header-inner bg-deep-blue">
+                                    <div class="menu-header-image opacity-1"
+                                         style="background-image: url('../assets/images/dropdown-header/city3.jpg');"></div>
+                                    <div class="menu-header-content text-dark">
+                                        <h5 class="menu-header-title">Notifications</h5>
+                                        <h6 class="menu-header-subtitle">You have <b>21</b> unread messages</h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <ul class="tabs-animated-shadow tabs-animated nav nav-justified tabs-shadow-bordered p-3">
+                                <li class="nav-item">
+                                    <a role="tab" class="nav-link active" data-toggle="tab"
+                                       href="#tab-messages-header">
+                                        <span>Messages</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a role="tab" class="nav-link" data-toggle="tab" href="#tab-events-header">
+                                        <span>Events</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a role="tab" class="nav-link" data-toggle="tab" href="#tab-errors-header">
+                                        <span>System Errors</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="tab-messages-header" role="tabpanel">
+                                    <div class="scroll-area-sm">
+                                        <div class="scrollbar-container">
+                                            <div class="p-3">
+                                                <div class="notifications-box">
+                                                    <div class="vertical-time-simple vertical-without-time vertical-timeline vertical-timeline--one-column">
+                                                        <div class="vertical-timeline-item dot-danger vertical-timeline-element">
+                                                            <div><span
+                                                                    class="vertical-timeline-element-icon bounce-in"></span>
+                                                                <div class="vertical-timeline-element-content bounce-in">
+                                                                    <h4 class="timeline-title">All Hands
+                                                                        Meeting</h4><span
+                                                                        class="vertical-timeline-element-date"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vertical-timeline-item dot-warning vertical-timeline-element">
+                                                            <div><span
+                                                                    class="vertical-timeline-element-icon bounce-in"></span>
+                                                                <div class="vertical-timeline-element-content bounce-in">
+                                                                    <p>Yet another one, at <span
+                                                                            class="text-success">15:00 PM</span></p>
+                                                                    <span class="vertical-timeline-element-date"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vertical-timeline-item dot-success vertical-timeline-element">
+                                                            <div><span
+                                                                    class="vertical-timeline-element-icon bounce-in"></span>
+                                                                <div class="vertical-timeline-element-content bounce-in">
+                                                                    <h4 class="timeline-title">Build the production
+                                                                        release
+                                                                        <span class="badge badge-danger ml-2">NEW</span>
+                                                                    </h4>
+                                                                    <span class="vertical-timeline-element-date"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vertical-timeline-item dot-primary vertical-timeline-element">
+                                                            <div><span
+                                                                    class="vertical-timeline-element-icon bounce-in"></span>
+                                                                <div class="vertical-timeline-element-content bounce-in">
+                                                                    <h4 class="timeline-title">Something not
+                                                                        important
+                                                                    </h4>
+                                                                    <span class="vertical-timeline-element-date"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vertical-timeline-item dot-info vertical-timeline-element">
+                                                            <div><span
+                                                                    class="vertical-timeline-element-icon bounce-in"></span>
+                                                                <div class="vertical-timeline-element-content bounce-in">
+                                                                    <h4 class="timeline-title">This dot has an info
+                                                                        state</h4><span
+                                                                        class="vertical-timeline-element-date"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vertical-timeline-item dot-danger vertical-timeline-element">
+                                                            <div><span
+                                                                    class="vertical-timeline-element-icon bounce-in"></span>
+                                                                <div class="vertical-timeline-element-content bounce-in">
+                                                                    <h4 class="timeline-title">All Hands
+                                                                        Meeting</h4><span
+                                                                        class="vertical-timeline-element-date"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vertical-timeline-item dot-warning vertical-timeline-element">
+                                                            <div><span
+                                                                    class="vertical-timeline-element-icon bounce-in"></span>
+                                                                <div class="vertical-timeline-element-content bounce-in">
+                                                                    <p>Yet another one, at <span
+                                                                            class="text-success">15:00 PM</span></p>
+                                                                    <span class="vertical-timeline-element-date"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vertical-timeline-item dot-success vertical-timeline-element">
+                                                            <div><span
+                                                                    class="vertical-timeline-element-icon bounce-in"></span>
+                                                                <div class="vertical-timeline-element-content bounce-in">
+                                                                    <h4 class="timeline-title">Build the production
+                                                                        release
+                                                                        <span class="badge badge-danger ml-2">NEW</span>
+                                                                    </h4>
+                                                                    <span class="vertical-timeline-element-date"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="vertical-timeline-item dot-dark vertical-timeline-element">
+                                                            <div><span
+                                                                    class="vertical-timeline-element-icon bounce-in"></span>
+                                                                <div class="vertical-timeline-element-content bounce-in">
+                                                                    <h4 class="timeline-title">This dot has a dark
+                                                                        state</h4><span
+                                                                        class="vertical-timeline-element-date"></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="tab-events-header" role="tabpanel">
+                                    <div class="scroll-area-sm">
+                                        <div class="scrollbar-container">
+                                            <div class="p-3">
+                                                <div class="vertical-without-time vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
+                                                    <div class="vertical-timeline-item vertical-timeline-element">
+                                                        <div><span class="vertical-timeline-element-icon bounce-in"><i
+                                                                class="badge badge-dot badge-dot-xl badge-success"> </i></span>
+                                                            <div class="vertical-timeline-element-content bounce-in">
+                                                                <h4 class="timeline-title">All Hands Meeting</h4>
+                                                                <p>Lorem ipsum dolor sic amet, today at <a
+                                                                        href="javascript:void(0);">12:00 PM</a></p>
+                                                                <span class="vertical-timeline-element-date"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="vertical-timeline-item vertical-timeline-element">
+                                                        <div><span class="vertical-timeline-element-icon bounce-in"><i
+                                                                class="badge badge-dot badge-dot-xl badge-warning"> </i></span>
+                                                            <div class="vertical-timeline-element-content bounce-in">
+                                                                <p>Another meeting today, at <b class="text-danger">12:00
+                                                                    PM</b></p>
+                                                                <p>Yet another one, at <span class="text-success">15:00 PM</span>
+                                                                </p><span
+                                                                    class="vertical-timeline-element-date"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="vertical-timeline-item vertical-timeline-element">
+                                                        <div><span class="vertical-timeline-element-icon bounce-in"><i
+                                                                class="badge badge-dot badge-dot-xl badge-danger"> </i></span>
+                                                            <div class="vertical-timeline-element-content bounce-in">
+                                                                <h4 class="timeline-title">Build the production
+                                                                    release</h4>
+                                                                <p>Lorem ipsum dolor sit amit,consectetur eiusmdd
+                                                                    tempor incididunt ut labore et dolore magna elit
+                                                                    enim at minim veniam quis nostrud</p><span
+                                                                    class="vertical-timeline-element-date"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="vertical-timeline-item vertical-timeline-element">
+                                                        <div><span class="vertical-timeline-element-icon bounce-in"><i
+                                                                class="badge badge-dot badge-dot-xl badge-primary"> </i></span>
+                                                            <div class="vertical-timeline-element-content bounce-in">
+                                                                <h4 class="timeline-title text-success">Something
+                                                                    not important</h4>
+                                                                <p>Lorem ipsum dolor sit amit,consectetur elit enim
+                                                                    at minim veniam quis nostrud</p><span
+                                                                    class="vertical-timeline-element-date"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="vertical-timeline-item vertical-timeline-element">
+                                                        <div><span class="vertical-timeline-element-icon bounce-in"><i
+                                                                class="badge badge-dot badge-dot-xl badge-success"> </i></span>
+                                                            <div class="vertical-timeline-element-content bounce-in">
+                                                                <h4 class="timeline-title">All Hands Meeting</h4>
+                                                                <p>Lorem ipsum dolor sic amet, today at <a
+                                                                        href="javascript:void(0);">12:00 PM</a></p>
+                                                                <span class="vertical-timeline-element-date"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="vertical-timeline-item vertical-timeline-element">
+                                                        <div><span class="vertical-timeline-element-icon bounce-in"><i
+                                                                class="badge badge-dot badge-dot-xl badge-warning"> </i></span>
+                                                            <div class="vertical-timeline-element-content bounce-in">
+                                                                <p>Another meeting today, at <b class="text-danger">12:00
+                                                                    PM</b></p>
+                                                                <p>Yet another one, at <span class="text-success">15:00 PM</span>
+                                                                </p><span
+                                                                    class="vertical-timeline-element-date"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="vertical-timeline-item vertical-timeline-element">
+                                                        <div><span class="vertical-timeline-element-icon bounce-in"><i
+                                                                class="badge badge-dot badge-dot-xl badge-danger"> </i></span>
+                                                            <div class="vertical-timeline-element-content bounce-in">
+                                                                <h4 class="timeline-title">Build the production
+                                                                    release</h4>
+                                                                <p>Lorem ipsum dolor sit amit,consectetur eiusmdd
+                                                                    tempor incididunt ut labore et dolore magna elit
+                                                                    enim at minim veniam quis nostrud</p><span
+                                                                    class="vertical-timeline-element-date"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="vertical-timeline-item vertical-timeline-element">
+                                                        <div><span class="vertical-timeline-element-icon bounce-in"><i
+                                                                class="badge badge-dot badge-dot-xl badge-primary"> </i></span>
+                                                            <div class="vertical-timeline-element-content bounce-in">
+                                                                <h4 class="timeline-title text-success">Something
+                                                                    not important</h4>
+                                                                <p>Lorem ipsum dolor sit amit,consectetur elit enim
+                                                                    at minim veniam quis nostrud</p><span
+                                                                    class="vertical-timeline-element-date"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="tab-errors-header" role="tabpanel">
+                                    <div class="scroll-area-sm">
+                                        <div class="scrollbar-container">
+                                            <div class="no-results pt-3 pb-0">
+                                                <div class="swal2-icon swal2-success swal2-animate-success-icon">
+                                                    <div class="swal2-success-circular-line-left"
+                                                         style="background-color: rgb(255, 255, 255);"></div>
+                                                    <span class="swal2-success-line-tip"></span>
+                                                    <span class="swal2-success-line-long"></span>
+                                                    <div class="swal2-success-ring"></div>
+                                                    <div class="swal2-success-fix"
+                                                         style="background-color: rgb(255, 255, 255);"></div>
+                                                    <div class="swal2-success-circular-line-right"
+                                                         style="background-color: rgb(255, 255, 255);"></div>
+                                                </div>
+                                                <div class="results-subtitle">All caught up!</div>
+                                                <div class="results-title">There are no system errors!</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <ul class="nav flex-column">
+                                <li class="nav-item-divider nav-item"></li>
+                                <li class="nav-item-btn text-center nav-item">
+                                    <button class="btn-shadow btn-wide btn-pill btn btn-focus btn-sm">View Latest
+                                        Changes
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="header-btn-lg pr-0">
+                    <div class="widget-content p-0">
+                        <div class="widget-content-wrapper">
+                            <div class="widget-content-left">
+                                <div class="btn-group">
+                                    <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                       class="p-0 btn">
+                                        <i class="fa fa-angle-down ml-2 opacity-8"></i>
+                                    </a>
+                                    <div tabindex="-1" role="menu" aria-hidden="true"
+                                         class="rm-pointers dropdown-menu-lg dropdown-menu dropdown-menu-right">
+                                        <div class="dropdown-menu-header">
+                                            <div class="dropdown-menu-header-inner bg-info">
+                                                <div class="menu-header-image opacity-2"
+                                                     style="background-image: url('../assets/images/dropdown-header/city3.jpg');"></div>
+                                                <div class="menu-header-content text-left">
+                                                    <div class="widget-content p-0">
+                                                        <div class="widget-content-wrapper">
+                                                            <div class="widget-content-left">
+                                                                <div class="widget-heading" sec:authentication="name">
+                                                                </div>
+                                                                <div class="widget-subheading opacity-8">A short
+                                                                    profile description
+                                                                </div>
+                                                            </div>
+                                                            <div class="widget-content-right mr-2">
+                                                                <form th:action="@{/logout}" method="POST" class="btn-pill btn btn-gradient-success">
+                                                                    <input type="submit" value="Logout" style="border: none; background-color: transparent; font-weight: bold;"/>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- box admin -->
+                                        <div class="scroll-area-xs" style="height: 150px;">
+                                            <div class="scrollbar-container ps">
+                                                <ul class="nav flex-column">
+                                                    <li class="nav-item-header nav-item">
+                                                        <a th:href="'/Lab/admin/myAccount/'+${#authentication.name}"> My Account</a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a href="javascript:void(0);" class="nav-link">Recover
+                                                            Password
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="widget-content-left  ml-3 header-user-info">
+                                <div class="widget-heading" sec:authentication="name">
+                                </div>
+                                <div class="widget-subheading" sec:authentication="principal.authorities">
+                                </div>
+                            </div>
+                            <div class="widget-content-right header-user-info ml-3">
+                                <button type="button"
+                                        class="btn-shadow p-1 btn btn-primary btn-sm show-toastr-example">
+                                    <i class="fa text-white fa-calendar pr-1 pl-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-btn-lg">
+                    <button type="button" class="hamburger hamburger--elastic open-right-drawer">
+                        <span class="hamburger-box">
+                            <span class="hamburger-inner"></span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!--</header>-->
+</body>
+</html>
