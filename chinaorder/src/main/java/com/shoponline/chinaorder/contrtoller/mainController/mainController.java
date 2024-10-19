@@ -188,7 +188,7 @@ public class mainController {
         List<Supplier> suppliersx = supplierService.findSuppliersNotUsedInProducts();
         model.addAttribute("suppliers", suppliers);
         model.addAttribute("suppliersx", suppliersx);
-        model.addAttribute("content", "pages/support/suplier");
+        model.addAttribute("content", "pages/support/supplier");
         model.addAttribute("title", "Quản lý Nhà cung cấp");
 
         model.addAttribute("success", success);

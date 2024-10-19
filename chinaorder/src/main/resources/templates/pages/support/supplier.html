@@ -22,8 +22,8 @@
     <div class="form-group" style="display: flex ; justify-content: space-around">
         <form th:action="@{'/Lengkeng/admin/suppliers/del'}" method="post">
             <div>
-                <label for="id" >Tên Nhà cung cấp:</label>
-                <select class="form-control" id="id" name="id"  required>
+                <label for="supplier_id" >Tên Nhà cung cấp:</label>
+                <select class="form-control" id="supplier_id" name="id"  required>
                     <option th:each="supplier : ${suppliersx}" th:value="${supplier.id}" th:text="${supplier.suppliername}"></option>
                 </select>
                 <label class="text-warning">Chỉ xóa được các nhà cung cấp chưa sử dụng</label>
