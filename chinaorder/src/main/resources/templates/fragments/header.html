@@ -51,14 +51,19 @@
                 </div>
                 <ul class="header-megamenu nav">
                     <li>
-                        <a class="nav-link" th:href="'/Lab/admin/Dashboard?username='+${#authentication.name}" target="_blank">
+                        <a class="nav-link" th:href="'/Lengkeng/admin/dashboard?username='+${#authentication.name}" target="_blank">
                             <i class="nav-link-icon pe-7s-settings"></i> Trang Admin
                         </a>
                     </li>
                     <li>
-                        <a class="nav-link" href="/Lab?RedirectLabAdmin=false" target="_blank">
-                            <i class="nav-link-icon pe-7s-home"></i> Đặt phòng Lab
+                        <a class="nav-link" href="/Lengkeng?RedirectByAdmin=true" target="_blank">
+                            <i class="nav-link-icon pe-7s-home"></i> Trang bán hàng
                         </a>
+                    </li>
+                    <li>
+                        <form th:action="@{/logout}" method="POST" class="btn-pill btn btn-gradient-success">
+                            <input type="submit" value="Logout" style="border: none; background-color: transparent; font-weight: bold;"/>
+                        </form>
                     </li>
                 </ul>
             </div>

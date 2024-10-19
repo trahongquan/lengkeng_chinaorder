@@ -20,7 +20,13 @@
     <!--Header START-->
         <div th:replace="fragments/header"></div>
     <!--Header END-->
-    <!--THEME OPTIONS START-->
+
+    <!-- Notice START-->
+    <div th:replace="fragments/nocite :: notice-success"></div>
+    <div th:replace="fragments/nocite :: notice-unSuccess"></div>
+    <!-- Notice END-->
+
+        <!--THEME OPTIONS START-->
     <div class="ui-theme-settings no-print">
         <button type="button" id="TooltipDemo" class="btn-open-options btn btn-warning">
             <i class="fa fa-cog fa-w-16 fa-spin fa-2x"></i>
@@ -486,5 +492,5 @@
 <!-- Orther -->
 
 <script th:src="@{/js/app.js}" type="application/javascript"></script>
-<!--<script th:src="@{/js/noticePopUp.js}"></script>-->
+<script th:src="@{/js/noticePopUp.js}"></script>
 </html>

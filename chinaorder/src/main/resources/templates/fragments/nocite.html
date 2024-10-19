@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>notice</title>
+</head>
+<body>
+<notice-success>
+    <div th:if="${success}" style="display: flex; justify-content: flex-end; align-items: flex-end;
+                                    position: fixed; top: 7em; right: 10px;
+                                    background: linear-gradient(45deg, rgba(229,191,22,0.45), rgba(152,229,18,0.45)); z-index: 999;">
+        <p id="successMessage" style="padding: 15px;
+                                    border: 1px solid transparent;
+                                    border-radius: 4px;
+                                    color: #721c24;
+                                    border-color: black;
+                                    margin-bottom: 0;
+                                    font-weight: bold;">Thao tác thành công(<span id="countdown">5</span>)</p>
+    <script>
+        console.log([[${success}]])
+    </script>
+    </div>
+</notice-success>
+<notice-unSuccess>
+    <div th:if="${unsuccess}" style="display: flex; justify-content: flex-end; align-items: flex-end;
+                                    position: fixed; top: 7em; right: 10px; background: red; z-index: 999;">
+        <p id="unsuccessMessage" style="padding: 15px;
+                                    border: 1px solid transparent;
+                                    border-radius: 4px;
+                                    color: #ffff13;
+                                    border-color: black;
+                                    margin-bottom: 0;
+                                    font-weight: bold;">Không thành công <span th:if="${#request.requestURI == '/Lab/admin/ExperimentManagement/Score'}">do đã tồn tại</span>(<span id="uncountdown">5</span>)
+        </p>
+    <script>
+        console.log([[${unsuccess}]])
+    </script>
+    </div>
+</notice-unSuccess>
+
+</body>
+</html>

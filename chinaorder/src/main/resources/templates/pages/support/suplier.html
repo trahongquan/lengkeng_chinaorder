@@ -14,29 +14,29 @@
 <!--<div th:replace="admin/headerAdmin :: header-admin"></div>-->
 <suplier>
     <h1 style="text-align: center" class="text-uppercase font-weight-bold"> Danh mục Nhà cung cấp
-        <a th:href="'/Lab/admin/Export/ManagingUnits'" >
+        <a th:href="'#'" >
             <img src="/images/download.png" alt="Tải xuống" style="max-width: 2%" >
         </a>
     </h1>
     <!--<div th:replace="admin/add-nocite.html :: notice"></div>-->
     <div class="form-group" style="display: flex ; justify-content: space-around">
-        <form th:action="@{'/Lab/admin/ManagingUnit/delete'}" method="post">
+        <form th:action="@{'/Lengkeng/admin/suppliers/del'}" method="post">
             <div>
-                <label for="managingunit" >Tên Nhà cung cấp:</label>
-                <select class="form-control" id="managingunit" name="managingunitId"  required>
+                <label for="id" >Tên Nhà cung cấp:</label>
+                <select class="form-control" id="id" name="id"  required>
                     <option th:each="supplier : ${suppliersx}" th:value="${supplier.id}" th:text="${supplier.suppliername}"></option>
                 </select>
-                <label for="role" class="text-warning">Chỉ xóa được các nhà cung cấp chưa sử dụng</label>
+                <label class="text-warning">Chỉ xóa được các nhà cung cấp chưa sử dụng</label>
             </div>
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có thực sử muốn xóa đơn vị này')" > Xóa </button>
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có thực sử muốn xóa này')" > Xóa </button>
         </form>
         <div style="display: flex; justify-content: space-around">
-            <form th:action="'/Lab/admin/ManagingUnit/add'" method="post">
+            <form th:action="'/Lengkeng/admin/suppliers/add'" method="post">
                 <div style="margin-right: 10px">
-                    <label for="addmanagingunit" >Thêm Nhà cung cấp:</label>
-                    <input type="text" class="form-control" id="addmanagingunit" name="managingunit" required>
+                    <label for="supplier_name" >Thêm Nhà cung cấp:</label>
+                    <input type="text" class="form-control" id="supplier_name" name="supplier_name" required>
                 </div>
-                <button type="submit" class="btn btn-primary" onclick="return confirm('Bạn có thực sử muốn thêm đơn vị này')"> Thêm mới</button>
+                <button type="submit" class="btn btn-primary" onclick="return confirm('Bạn có thực sử muốn thêm tên này')"> Thêm mới</button>
             </form>
         </div>
     </div>
@@ -56,8 +56,11 @@
                 <tr th:each="supplier, iter : ${suppliers}">
                     <td th:text="${iter.index + 1}"></td>
                     <td th:text="${supplier.suppliername}"></td>
-                    <td>
-                        <button class="btn btn-primary edit" th:data="${supplier.id}">Sửa</button>
+                    <td class="d-flex flex-row justify-content-center align-content-center">
+                        <button type="button" class="form-control btn btn-primary btn-edit m-1"
+                                th:data-id="${supplier.id}"
+                                th:data-name="${supplier.suppliername}"
+                        >Sửa</button>
                     </td>
                     <!--<td th:unless="${role.role == rolesNotRoleSystem[iter.index].role}" th:text="'Quyền nười dùng thêm'"></td>-->
                 </tr>
@@ -73,85 +76,28 @@
             </table>
         </div>
     </div>
+    <!-- Popup -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <h2>Sửa thông tin </h2>
+            <h5 class="text-warning"><strong><span>Chú ý: </span></strong> không nên đổi trùng tên đã có</h5>
+            <form id="editForm" th:action="'/Lengkeng/admin/suppliers/edit'" method="post" >
+                <label for="name" >Tên :</label>
+                <div class="d-flex flex-row justify-content-center align-content-center">
+                    <input type="text" id="name" name="name" class="form-control text-danger font-weight-bold" required>
+                    <input type="hidden" id="id" name="id" class="form-control" required>
+                    <button type="submit" class="btn btn-primary" id="btnEdit">Sửa</button>
+                </div>
+            </form>
+            <br>
+            <button type="button" class="btn btn-secondary close-btn">Đóng</button>
+        </div>
+    </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="/js/noticePopUp.js"></script>
+    <script src="/js/popup.js"></script>
     <script th:inline="javascript">
-        var inputs = $('.lesson');
-        $(document).ready(function () {
-            var lessonDTOs = [[${lessonDTOs}]];
-            $('#warning').hide();
-            $('.edit').click(function() {
-                var lessonId = $(this).attr('data');
-                console.log('lessonId = ' + lessonId);
-                var lesson = $.grep(lessonDTOs, function(lessonDTO) {
-                    return lessonDTO.id == lessonId;
-                });
-                console.log(lesson[0]);
-
-
-                if($('#id').val()==lessonId){
-                    $('#id').val(0);
-                    $('#noLesson').val("");
-                    $('#name').val("");
-                    $('#module').val("");
-                    $('#level').val("");
-                    $('#workTime').val(5);
-                    $('#type').val("");
-                    $('#note').val("");
-                    $('#btnSubmit').text('Thêm mới')
-                    inputs.each(function() {
-                        $(this).removeClass('font-weight-bold')
-                    })
-                    $('#warning').hide()
-                } else {
-                    // Populate the input and select fields with lesson information
-                    $('#id').val(lesson[0].id);
-                    $('#noLesson').val(lesson[0].noLesson);
-                    $('#name').val(lesson[0].name);
-                    $('#module').val(lesson[0].module);
-                    $('#labId').val(lesson[0].labId);
-                    $('#level').val(lesson[0].level);
-                    $('#workTime').val(lesson[0].workTime);
-                    $('#type').val(lesson[0].type);
-                    $('#note').val(lesson[0].note);
-                    $('#btnSubmit').text('Sửa')
-                    inputs.each(function() {
-                        $(this).addClass('font-weight-bold')
-                    })
-                    $('#warning').show();
-                }
-
-            })
-        })
-
-        $('#formLesson').submit(function(event) {
-            event.preventDefault(); // Prevent form submission
-
-            // Check if all fields have data
-            var isValid = true;
-            console.log(inputs)
-            inputs.each(function() {
-                if ($(this).val() === '') {
-                    isValid = false;
-                    var fieldName = $(this).attr('name');
-                    alert('Điền đầy đủ thông tin vào trường ' + fieldName);
-                    return false; // Exit the loop
-                }
-            });
-
-            if (isValid) {
-                // Confirm before submitting the form
-                if (confirm('Bạn có chắc chắn muốn thêm mới?')) {
-                    // Submit the form
-                    $(this).unbind('submit').submit();
-                }
-            }
-        });
-        $('#btnSubmit').click(function() {
-            $('#formLesson').submit(event);
-        });
     </script>
 </suplier>
 </body>

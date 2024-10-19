@@ -23,12 +23,20 @@ import com.shoponline.chinaorder.service.unit.UnitService;
 import com.shoponline.chinaorder.service.users.UserService;
 import com.shoponline.chinaorder.service.variant.VariantService;
 import com.shoponline.chinaorder.service.voucher.VoucherService;
+import com.shoponline.chinaorder.support.RoleSystem;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.constraints.Min;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -84,9 +92,41 @@ public class mainController {
         this.voucherService = voucherService;
     }
 
+    String template = "layout";
+    public String Redirect(String url, Object success) {
+        if (success instanceof Boolean) {
+            if((boolean) success){
+                if(url.contains("?")){
+                    String successParam = "&success=" + success;
+                    return "redirect:/Lengkeng" + url + successParam;
+                } else {
+                    String successParam = "?success=" + success;
+                    return "redirect:/Lengkeng" + url + successParam;
+                }
+            } else{
+                if(url.contains("?")){
+                    String successParam = "&unsuccess=" + true;
+                    return "redirect:/Lengkeng" + url + successParam;
+                } else {
+                    String successParam = "?unsuccess=" + true;
+                    return "redirect:/Lengkeng" + url + successParam;
+                }
+            }
+        } else {
+            return "redirect:/Lengkeng" + url;
+        }
+    }
+
     @GetMapping({"/", ""})
-    public String Lengkeng(){
-//        provinceService.getAllProvinces().forEach(p -> System.out.println(p));
+    public String Lengkeng(Principal principal, Authentication authentication){
+        if(principal != null && authentication != null){
+            String username = principal.getName();
+            String authority = "";
+            for (GrantedAuthority grantedAuthority : authentication.getAuthorities()) {
+                authority = grantedAuthority.getAuthority();
+            }
+            if((authority.equals(RoleSystem.ROLE_ADMIN) || authority.equals(RoleSystem.ROLE_MANAGER))) return Redirect("/admin/dashboard","");
+        }
         return "visitors/index";
     }
     @GetMapping("/accouunt")
@@ -130,46 +170,260 @@ public class mainController {
     public String dashboard(Model model) {
         model.addAttribute("content", "pages/dashboard");
         model.addAttribute("title", "Dashboard");
-        return "layout";
+        return template;
     }
+
+    /***************************************************/
+    /********************* Suports *********************/
+    /***************************************************/
+
+
+    /********************* suppliers *********************/
+
     @GetMapping("/admin/suppliers")
-    public String suplier(Model model) {
+    public String suplier(Model model,
+                          @RequestParam(value = "success", defaultValue = "false") boolean success,
+                          @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
         List<Supplier> suppliers = supplierService.getAllSuppliers();
         List<Supplier> suppliersx = supplierService.findSuppliersNotUsedInProducts();
         model.addAttribute("suppliers", suppliers);
         model.addAttribute("suppliersx", suppliersx);
         model.addAttribute("content", "pages/support/suplier");
         model.addAttribute("title", "Quản lý Nhà cung cấp");
-        return "layout";
+
+        model.addAttribute("success", success);
+        model.addAttribute("unsuccess", unsuccess);
+        return template;
     }
+
+    @PostMapping({"/admin/suppliers/add"})
+    public String Suppliers_Add(Model model,
+                                @RequestParam("supplier_name") String supplier_name) {
+        try {
+            Supplier supplier = new Supplier(supplier_name);
+            supplierService.createSupplier(supplier);
+            return Redirect("/admin/suppliers", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi: " + e.getMessage());
+            return Redirect("/admin/suppliers", false);
+        }
+    }
+
+
+    @PostMapping({"/admin/suppliers/del"})
+    public String Suppliers_Del(Model model,
+                                @RequestParam("id") @Min(1) int supplier_id){
+        try{
+            supplierService.deleteSupplier(supplier_id);
+            return Redirect("/admin/suppliers", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(": " + e.getMessage());
+            return Redirect("/admin/suppliers", false);
+        }
+    }
+
+    @PostMapping({"/admin/suppliers/edit"})
+    public String suppliers_Edit(Model model,
+                            @RequestParam("id") int id,
+                            @RequestParam("name") String name){
+        try{
+            Supplier supplier = supplierService.findSupplierById(id);
+            supplier.setSuppliername(name);
+            supplierService.createSupplier(supplier);
+            return Redirect("/admin/suppliers", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(": " + e.getMessage());
+            return Redirect("/admin/suppliers", false);
+        }
+    }
+
+    /********************* brands *********************/
+
     @GetMapping("/admin/brands")
-    public String brands(Model model) {
+    public String brands(Model model,
+                         @RequestParam(value = "success", defaultValue = "false") boolean success,
+                         @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
         List<Brands> brands = brandService.getAllBrands();
         List<Brands> brandsx = brandService.findBrandsNotUsedInProducts();
         model.addAttribute("brands", brands);
         model.addAttribute("brandsx", brandsx);
         model.addAttribute("content", "pages/support/brands");
         model.addAttribute("title", "Quản lý Thương hiệu");
-        return "layout";
+
+        model.addAttribute("success", success);
+        model.addAttribute("unsuccess", unsuccess);
+        return template;
     }
+
+
+    @PostMapping({"/admin/brands/add"})
+    public String Brands_Add(Model model,
+                             @RequestParam("brand_name") String brand_name) {
+        try {
+            Brands brand = new Brands(brand_name);
+            brandService.createBrand(brand);
+            return Redirect("/admin/brands", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi: " + e.getMessage());
+            return Redirect("/admin/brands", false);
+        }
+    }
+
+
+    @PostMapping({"/admin/brands/del"})
+    public String Brands_Del(Model model,
+                             @RequestParam("id") @Min(1) int brand_id){
+        try{
+            brandService.deleteBrand(brand_id);
+            return Redirect("/admin/brands", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(": " + e.getMessage());
+            return Redirect("/admin/brands", false);
+        }
+    }
+
+    @PostMapping({"/admin/brands/edit"})
+    public String Brands_Edit(Model model,
+                              @RequestParam("id") int id,
+                              @RequestParam("name") String name){
+        try{
+            Brands brand = brandService.findBrandById(id);
+            brand.setBrandname(name);
+            brandService.createBrand(brand);
+            return Redirect("/admin/brands", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(": " + e.getMessage());
+            return Redirect("/admin/brands", false);
+        }
+    }
+
+    /********************* categories *********************/
+
     @GetMapping("/admin/categories")
-    public String categories(Model model) {
+    public String categories(Model model,
+                             @RequestParam(value = "success", defaultValue = "false") boolean success,
+                             @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
         List<Categories> categories = categoryService.getAllCategories();
         List<Categories> categoriesx = categoryService.findCategoriesNotUsedInProducts();
         model.addAttribute("categories", categories);
         model.addAttribute("categoriesx", categoriesx);
         model.addAttribute("content", "pages/support/categories");
         model.addAttribute("title", "Quản lý phân loại hàng");
-        return "layout";
+
+        model.addAttribute("success", success);
+        model.addAttribute("unsuccess", unsuccess);
+        return template;
     }
+
+    @PostMapping({"/admin/categories/add"})
+    public String Categories_Add(Model model,
+                                 @RequestParam("category_name") String category_name) {
+        try {
+            Categories category = new Categories(category_name);
+            categoryService.createCategory(category);
+            return Redirect("/admin/categories", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi: " + e.getMessage());
+            return Redirect("/admin/categories", false);
+        }
+    }
+
+
+    @PostMapping({"/admin/categories/del"})
+    public String Categories_Del(Model model,
+                                 @RequestParam("id") @Min(1) int category_id){
+        try{
+            categoryService.deleteCategory(category_id);
+            return Redirect("/admin/categories", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(": " + e.getMessage());
+            return Redirect("/admin/categories", false);
+        }
+    }
+
+    @PostMapping({"/admin/categories/edit"})
+    public String Categories_Edit(Model model,
+                                  @RequestParam("id") int id,
+                                  @RequestParam("name") String name){
+        try{
+            Categories category = categoryService.findCategoryById(id);
+            category.setCatname(name);
+            categoryService.createCategory(category);
+            return Redirect("/admin/categories", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(": " + e.getMessage());
+            return Redirect("/admin/categories", false);
+        }
+    }
+
+    /********************* units *********************/
+
     @GetMapping("/admin/units")
-    public String unit(Model model) {
+    public String unit(Model model,
+                       @RequestParam(value = "success", defaultValue = "false") boolean success,
+                       @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
         List<Unit> units = unitService.getAllUnits();
         List<Unit> unitsx = unitService.findUnitsNotUsedInProducts();
         model.addAttribute("units", units);
         model.addAttribute("unitsx", unitsx);
         model.addAttribute("content", "pages/support/units");
         model.addAttribute("title", "Quản lý đơn vị tính");
-        return "layout";
+
+        model.addAttribute("success", success);
+        model.addAttribute("unsuccess", unsuccess);
+        return template;
+    }
+
+    @PostMapping({"/admin/units/add"})
+    public String Units_Add(Model model,
+                            @RequestParam("unit_name") String unit_name) {
+        try {
+            Unit unit = new Unit(unit_name);
+            unitService.createUnit(unit);
+            return Redirect("/admin/units", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi: " + e.getMessage());
+            return Redirect("/admin/units", false);
+        }
+    }
+
+
+    @PostMapping({"/admin/units/del"})
+    public String Units_Del(Model model,
+                            @RequestParam("id") @Min(1) int unit_id){
+        try{
+            unitService.deleteUnit(unit_id);
+            return Redirect("/admin/units", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(": " + e.getMessage());
+            return Redirect("/admin/units", false);
+        }
+    }
+
+    @PostMapping({"/admin/units/edit"})
+    public String Units_Edit(Model model,
+                             @RequestParam("id") int id,
+                             @RequestParam("name") String name){
+        try{
+            Unit unit = unitService.findUnitById(id);
+            unit.setUnit(name);
+            unitService.createUnit(unit);
+            return Redirect("/admin/units", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(": " + e.getMessage());
+            return Redirect("/admin/units", false);
+        }
     }
 }

@@ -2,8 +2,13 @@ package com.shoponline.chinaorder.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import lombok.Data;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Entity
 @Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "Username"))

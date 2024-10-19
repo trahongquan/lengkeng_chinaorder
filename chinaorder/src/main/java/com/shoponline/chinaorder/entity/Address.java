@@ -1,10 +1,14 @@
 package com.shoponline.chinaorder.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "address")
 public class Address {
@@ -31,4 +35,13 @@ public class Address {
     private String address;
     @Column(name = "is_delete")
     private int isDelete;
+
+    public Address(People people, Province province, District district, Commune commune, String address, int isDelete) {
+        this.people = people;
+        this.province = province;
+        this.district = district;
+        this.commune = commune;
+        this.address = address;
+        this.isDelete = isDelete;
+    }
 }

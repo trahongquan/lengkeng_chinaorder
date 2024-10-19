@@ -1,8 +1,12 @@
 package com.shoponline.chinaorder.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import javax.persistence.*;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Entity
 @Table(name = "brands")
@@ -12,4 +16,8 @@ public class Brands {
     private int id;
 
     private String brandname;
+
+    public Brands(String brand_name) {
+        this.brandname = brand_name;
+    }
 }
