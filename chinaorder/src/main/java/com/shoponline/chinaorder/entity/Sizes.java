@@ -15,6 +15,6 @@ public class Sizes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
+    @Column(name = "size_name")
     private String sizeName;
 }

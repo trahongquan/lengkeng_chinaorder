@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Employees</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<variant-manager>
+        <h1 class="text-center text-uppercase font-weight-bold mt-5">Danh sách Biến thế
+            <a href="/Lab/admin/Export/Managers" class="col-3">
+                <img src="/images/download.png" alt="Tải xuống" style="max-width: 2%">
+            </a>
+        </h1>
+        <!--<h1 style=" text-align: center; font-size: 2em" th:text="'Số lượng: ' + ${#lists.size(managerDTOS)}"></h1>
+        <br>
+        <div class="d-flex justify-content-around align-content-center">
+            <a href="/Lab/admin/Manager/add">
+                <button type="button" class="btn btn-primary font-bold font-size-xlg">Thêm người Quản lý</button>
+            </a>
+        </div>-->
+    <form th:action="'/Lengkeng/admin/variants/add'" method="post" id="formLesson"
+          class="d-flex justify-content-center align-content-center flex-column">
+        <div class="row d-flex justify-content-center align-content-center">
+            <input type="hidden" name="username" th:value="${#authentication.name}">
+            <input type="hidden" name="id" id="id" th:value="0">
+            <div class="col-2">
+                <div>
+                    <label for="category"> Danh mục</label>
+                    <select name="category" id="category"  class="form-control variant">
+                        <option th:each="category : ${categories}" th:value="${category.id}"
+                        th:text="${category.catname}"></option>
+                    </select>
+                </div>
+                <div>
+                    <label for="product" >Tên sản phẩm:</label>
+                    <select name="product" id="product" class="form-control variant">
+                        <option th:each="product : ${products}" th:value="${product.id}"
+                        th:text="${product.productName}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-2">
+                <div>
+                    <label for="sku" >Mã hàng:</label>
+                    <input type="text" class="form-control variant" id="sku" name="sku" placeholder="VD: TPN-AD01-S-RD" required>
+                </div>
+                <div>
+                    <label for="stockQuantity">Tồn kho </label>
+                    <input type="number" class="form-control variant" id="stockQuantity" name="stockQuantity" placeholder="VD: 12" min="0" step="1" required>
+                </div>
+            </div>
+            <div class="col-4 row">
+                <div class="col-6">
+                    <div>
+                        <label for="size"> Kích cỡ</label>
+                        <select name="size" id="size"  class="form-control variant">
+                            <option th:each="size : ${sizes}" th:value="${size.id}"
+                                    th:text="${size.sizeName}"></option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="color" >Màu sắc:</label>
+                        <select name="color" id="color" class="form-control variant">
+                            <option th:each="color : ${colors}" th:value="${color.id}"
+                                    th:text="${color.color}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div>
+                        <label for="costPrice" >Giá nhập:</label>
+                        <input type="number" class="form-control variant" id="costPrice" name="costPrice" placeholder="VD: 250000" required>
+                    </div>
+                    <div>
+                        <label for="sellingPrice" >Giá bán:</label>
+                        <input type="number" class="form-control variant" id="sellingPrice" name="sellingPrice" placeholder="VD: 280000" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="submit" id="btnSubmit" class="btn btn-primary mt-2"
+                onclick="return confirm('Bạn có chắc chắn muốn thực hiện thao tác này???')"> Thêm mới</button>
+        <p class="text-warning mt-2 btn" id="warning">Chú ý: Click lại nút sửa một lần nữa để hủy chế độ sửa</p>
+    </form>
+        <br>
+        <div class="main-card mb-3 card">
+            <div class="card-body">
+                <table style="width: 100%;" id="example" class="table table-hover table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên SP</th>
+                        <th>SKU</th>
+                        <th>Kích cỡ</th>
+                        <th>Màu</th>
+                        <th>Giá nhập</th>
+                        <th>Giá bán</th>
+                        <th>Tồn kho</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="variant, iter : ${variants}">
+                        <td th:text="${iter.index + 1}"></td>
+                        <td th:text="${variant.product.productName}"></td>
+                        <td th:text="${variant.sku}"></td>
+                        <td th:text="${variant.size.sizeName}"></td>
+                        <td th:text="${variant.color.color}"></td>
+                        <td th:text="${variant.costPrice}"></td>
+                        <td th:text="${variant.sellingPrice}"></td>
+                        <td th:text="${variant.stockQuantity} + ' ' +${variant.product.unit.unit} "></td>
+                        <td>
+                            <div class="d-flex" style="display: flex; justify-content: center; align-items: center;">
+                                <button type="button" class="btn btn-sm btn-primary btn-edit mr-1"
+                                        th:data-id="${variant.id}"
+                                >Sửa</button>
+                                <form th:action="@{'/Lengkeng/admin/variants/detail/' + ${variant.id}}"
+                                      method="get">
+                                    <button type="submit" class="btn btn-info btn-sm mr-1">Chi tiết</button>
+                                </form>
+                                <form th:action="@{'/Lengkeng/admin/variants/del/' + ${variant.id}}"
+                                      method="POST">
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên SP</th>
+                        <th>SKU</th>
+                        <th>Kích cỡ</th>
+                        <th>Màu</th>
+                        <th>Giá nhập</th>
+                        <th>Giá bán</th>
+                        <th>Tồn kho</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    <script th:inline="javascript">
+        var inputs = $('.variant');
+        $(document).ready(function () {
+            var variants = [[${variants}]];
+            $('#warning').hide();
+            $('.btn-edit').click(function() {
+                var variant_id = $(this).attr('data-id');
+                var variant = $.grep(variants, function(variant1) {
+                    return variant1.id == variant_id;
+                });
+                console.log(variant[0]);
+
+
+                if($('#id').val()==variant_id){
+                    $('#id').val(0);
+                    $('#category').prop('selectedIndex', 0);
+                    $('#product').prop('selectedIndex', 0);
+                    $('#sku').val("");
+                    $('#size').prop('selectedIndex', 0);
+                    $('#color').prop('selectedIndex', 0);
+                    $('#costPrice').val("");
+                    $('#sellingPrice').val("");
+                    $('#stockQuantity').val("");
+                    $('#btnSubmit').text('Thêm mới');
+                    inputs.each(function() {
+                        $(this).removeClass('font-weight-bold')
+                    })
+                    $('#warning').hide()
+                }
+                else {
+                    // Populate the input and select fields with lesson information
+                    $('#id').val(variant[0].id);
+                    $('#category').val(variant[0].product.category.id);
+                    $('#product').val(variant[0].product.id);
+                    $('#sku').val(variant[0].sku);
+                    $('#size').val(variant[0].size.id);
+                    $('#color').val(variant[0].color.id);
+                    $('#costPrice').val(variant[0].costPrice);
+                    $('#sellingPrice').val(variant[0].sellingPrice);
+                    $('#stockQuantity').val(variant[0].stockQuantity);
+                    $('#btnSubmit').text('Sửa');
+                    inputs.each(function() {
+                        $(this).addClass('font-weight-bold')
+                    })
+                    $('#warning').show();
+                }
+
+                function selectOptionById(elementId, valueToSelect) {
+                    $('#' + elementId + ' option').each(function() {
+                        if ($(this).text() === valueToSelect) {
+                            $(this).prop('selected', true);
+                        }
+                    });
+                }
+
+            })
+        })
+    </script>
+    </variant-manager>
+</body>
+</html>

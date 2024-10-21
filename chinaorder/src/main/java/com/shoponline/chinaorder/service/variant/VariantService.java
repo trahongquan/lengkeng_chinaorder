@@ -1,6 +1,7 @@
 // VariantService.java
 package com.shoponline.chinaorder.service.variant;
 
+import com.shoponline.chinaorder.entity.Products;
 import com.shoponline.chinaorder.entity.Variants;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface VariantService {
     Variants findVariantById(int id);
 
     void deleteVariant(int id);
+
+    List<Variants> FindAllByProduct(Products products);
 }

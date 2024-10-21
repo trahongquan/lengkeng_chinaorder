@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>List of Employees</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
@@ -20,6 +19,61 @@
                 <button type="button" class="btn btn-primary font-bold font-size-xlg">Thêm người Quản lý</button>
             </a>
         </div>-->
+    <form th:action="'/Lengkeng/admin/products/add'" method="post" id="formLesson"
+          class="d-flex justify-content-center align-content-center flex-column">
+        <div class="row d-flex justify-content-center align-content-center">
+            <input type="hidden" name="username" th:value="${#authentication.name}">
+            <input type="hidden" name="id" id="id" th:value="0">
+            <div class="col-5">
+                <div>
+                    <label for="productName" >Tên sản phẩm:</label>
+                    <input type="text" class="form-control product" id="productName" name="productName" placeholder="VD: Áo Thun nam" required>
+                </div>
+                <div>
+                    <label for="productDesc" >Mô tả:</label>
+                    <input type="text" class="form-control product" id="productDesc" name="productDesc" placeholder="VD: Áo mặc mùa hè..." required>
+                </div>
+            </div>
+
+            <div class="col-6 row">
+                <div class="col-6">
+                    <div>
+                        <label for="category"> Danh mục</label>
+                        <select name="category" id="category"  class="form-control product">
+                            <option th:each="category : ${categories}" th:value="${category.id}"
+                                    th:text="${category.catname}"></option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="brand"> Thương hiệu </label>
+                        <select name="brand" id="brand"  class="form-control product">
+                            <option th:each="brand : ${brands}" th:value="${brand.id}"
+                                    th:text="${brand.brandname}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div>
+                        <label for="supplier"> Nhà cung cấp</label>
+                        <select name="supplier" id="supplier"  class="form-control product">
+                            <option th:each="supplier : ${suppliers}" th:value="${supplier.id}"
+                                    th:text="${supplier.suppliername}"></option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="unit">Đơn vị tính</label>
+                        <select name="unit" id="unit"  class="form-control product">
+                            <option th:each="unit : ${units}" th:value="${unit.id}"
+                                    th:text="${unit.unit}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="submit" id="btnSubmit" class="btn btn-primary mt-2"
+                onclick="return confirm('Bạn có chắc chắn muốn thực hiện thao tác này???')"> Thêm mới</button>
+        <p class="text-warning mt-2 btn" id="warning">Chú ý: Click lại nút sửa một lần nữa để hủy chế độ sửa</p>
+    </form>
         <br>
         <div class="main-card mb-3 card">
             <div class="card-body">
@@ -49,7 +103,11 @@
                         <!--<td th:if="${manager.hireEndDate == null}"> ❌ </td>-->
                         <td>
                             <div class="d-flex" style="display: flex; justify-content: center; align-items: center;">
-                                <form th:action="@{'/Lengkeng/admin/products/edit/' + ${product.id}}"
+                                <button type="button" class="btn btn-sm btn-primary btn-edit mr-1"
+                                        th:data-id="${product.id}"
+                                        th:data-name="${product.productName}"
+                                >Sửa</button>
+                                <form th:action="@{'/Lengkeng/admin/products/detail/' + ${product.id}}"
                                       method="get">
                                     <button type="submit" class="btn btn-info btn-sm mr-1">Chi tiết</button>
                                 </form>
@@ -78,6 +136,60 @@
                 </table>
             </div>
         </div>
+    <script th:inline="javascript">
+        var inputs = $('.product');
+        $(document).ready(function () {
+            var products = [[${products}]];
+            $('#warning').hide();
+            $('.btn-edit').click(function() {
+                var product_id = $(this).attr('data-id');
+                var product = $.grep(products, function(product1) {
+                    return product1.id == product_id;
+                });
+                console.log(product[0]);
+
+
+                if($('#id').val()==product_id){
+                    $('#id').val(0);
+                    $('#productName').val("");
+                    $('#category').prop('selectedIndex', 0);
+                    $('#brand').prop('selectedIndex', 0);
+                    $('#supplier').prop('selectedIndex', 0);
+                    $('#unit').prop('selectedIndex', 0);
+                    $('#productDesc').val("");
+                    $('#btnSubmit').text('Thêm mới');
+                    inputs.each(function() {
+                        $(this).removeClass('font-weight-bold')
+                    })
+                    $('#warning').hide()
+                }
+                else {
+                    // Populate the input and select fields with lesson information
+                    $('#id').val(product[0].id);
+                    $('#productName').val(product[0].productName);
+                    $('#category').val(product[0].category.id);
+                    $('#brand').val(product[0].brand.id);
+                    $('#supplier').val(product[0].supplier.id);
+                    $('#unit').val(product[0].unit.id);
+                    $('#productDesc').val(product[0].productDesc);
+                    $('#btnSubmit').text('Sửa');
+                    inputs.each(function() {
+                        $(this).addClass('font-weight-bold')
+                    })
+                    $('#warning').show();
+                }
+
+                function selectOptionById(elementId, valueToSelect) {
+                    $('#' + elementId + ' option').each(function() {
+                        if ($(this).text() === valueToSelect) {
+                            $(this).prop('selected', true);
+                        }
+                    });
+                }
+
+            })
+        })
+    </script>
     </product-manager>
 </body>
 </html>

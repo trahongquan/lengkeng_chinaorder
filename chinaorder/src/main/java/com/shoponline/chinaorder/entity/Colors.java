@@ -17,6 +17,8 @@ public class Colors {
     private int id;
 
     private String color;
+    @Column(name = "hex_code")
     private String hexCode;
+    private String abbreviations;
 }
 

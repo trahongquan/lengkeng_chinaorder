@@ -194,11 +194,7 @@ public class mainController {
     }
 
     @PostMapping({"/admin/suppliers/add"})
-    public String Suppliers_Add(Model model, @ModelAttribute Supplier supplier
-                                /*@RequestParam("id") int id,
-                                @RequestParam("suppliername") String suppliername,
-                                @RequestParam("address") String address,
-                                @RequestParam("contact") String contact*/) {
+    public String Suppliers_Add(Model model, @ModelAttribute Supplier supplier) {
         try {
             supplierService.createSupplier(supplier);
             return Redirect("/admin/suppliers", true);
@@ -222,26 +218,6 @@ public class mainController {
             return Redirect("/admin/suppliers", false);
         }
     }
-
-//    @PostMapping({"/admin/suppliers/edit"})
-//    public String suppliers_Edit(Model model,
-//                            @RequestParam("id") int id,
-//                            @RequestParam("name") String name,
-//                            @RequestParam("address") String address,
-//                            @RequestParam("contact") String contact){
-//        try{
-//            Supplier supplier = supplierService.findSupplierById(id);
-//            supplier.setSuppliername(name);
-//            supplier.setAddress(address);
-//            supplier.setContact(contact);
-//            supplierService.createSupplier(supplier);
-//            return Redirect("/admin/suppliers", true);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.out.println(": " + e.getMessage());
-//            return Redirect("/admin/suppliers", false);
-//        }
-//    }
 
     /********************* brands *********************/
 
@@ -439,8 +415,12 @@ public class mainController {
                            @RequestParam(value = "success", defaultValue = "false") boolean success,
                            @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
         List<Products> products = productService.getAllProducts();
-        System.out.println(products);
+
         model.addAttribute("products", products);
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("brands", brandService.getAllBrands());
+        model.addAttribute("suppliers", supplierService.getAllSuppliers());
+        model.addAttribute("units", unitService.getAllUnits());
         model.addAttribute("content", "pages/product/product_manager");
         model.addAttribute("title", "Quản lý sản phẩm");
 
@@ -449,4 +429,78 @@ public class mainController {
         return template;
     }
 
+    @PostMapping({"/admin/products/add"})
+    public String Products_Add(Model model, @ModelAttribute Products products) {
+        try {
+            System.out.println(products);
+            productService.createProduct(products);
+            return Redirect("/admin/products", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi: " + e.getMessage());
+            return Redirect("/admin/products", false);
+        }
+    }
+
+    @PostMapping({"/admin/products/del/{id}"})
+    public String Products_del(@PathVariable int id) {
+        try {
+            productService.deleteProduct(id, variantService);
+            return Redirect("/admin/products", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi: " + e.getMessage());
+            return Redirect("/admin/products", false);
+        }
+    }
+
+    @PostMapping({"/admin/products/detail"})
+    public String Products_detail(Model model, @ModelAttribute Products products) {
+//        try {
+//            System.out.println(products);
+//            productService.createProduct(products);
+//            return Redirect("/admin/products", true);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println("Lỗi: " + e.getMessage());
+            return Redirect("/admin/products", false);
+//        }
+    }
+
+
+    /***************************************************/
+    /********************* Product *********************/
+    /***************************************************/
+
+    @GetMapping("/admin/variants")
+    public String variants(Model model,
+                           @RequestParam(value = "success", defaultValue = "false") boolean success,
+                           @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
+        List<Variants> variants = variantService.getAllVariants();
+
+        model.addAttribute("variants", variants);
+        model.addAttribute("products", productService.getAllProducts());
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("colors", colorService.getAllColors());
+        model.addAttribute("sizes", sizeService.getAllSizes());
+        model.addAttribute("content", "pages/product/variant_manager");
+        model.addAttribute("title", "Quản lý sản phẩm");
+
+        model.addAttribute("success", success);
+        model.addAttribute("unsuccess", unsuccess);
+        return template;
+    }
+
+    @PostMapping({"/admin/variants/add"})
+    public String Variants_Add(@ModelAttribute Variants variants) {
+        try {
+            System.out.println(variants);
+            variantService.createVariant(variants);
+            return Redirect("/admin/variants", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi: " + e.getMessage());
+            return Redirect("/admin/variants", false);
+        }
+    }
 }

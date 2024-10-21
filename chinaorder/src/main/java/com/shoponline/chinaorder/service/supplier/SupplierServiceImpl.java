@@ -39,7 +39,7 @@ public class SupplierServiceImpl implements SupplierService {
             supplier_old.setSuppliername(supplier.getSuppliername());
             supplier_old.setAddress(supplier.getAddress());
             supplier_old.setContact(supplier.getContact());
-            return supplierRepository.save(supplier);
+            return supplierRepository.save(supplier_old);
         } else {
             return supplierRepository.save(supplier);
         }

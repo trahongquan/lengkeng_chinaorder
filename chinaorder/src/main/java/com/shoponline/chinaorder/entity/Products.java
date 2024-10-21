@@ -3,11 +3,13 @@ package com.shoponline.chinaorder.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Slf4j
 @Entity
 @Table(name = "products")
 public class Products {
@@ -36,4 +38,7 @@ public class Products {
 
     @Column(name = "product_desc")
     private String productDesc;
+
+    @Column(name = "is_delete")
+    private int isDelete;
 }
