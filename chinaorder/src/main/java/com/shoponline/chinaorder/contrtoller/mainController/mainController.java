@@ -30,10 +30,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Min;
 import java.security.Principal;
@@ -197,10 +194,12 @@ public class mainController {
     }
 
     @PostMapping({"/admin/suppliers/add"})
-    public String Suppliers_Add(Model model,
-                                @RequestParam("supplier_name") String supplier_name) {
+    public String Suppliers_Add(Model model, @ModelAttribute Supplier supplier
+                                /*@RequestParam("id") int id,
+                                @RequestParam("suppliername") String suppliername,
+                                @RequestParam("address") String address,
+                                @RequestParam("contact") String contact*/) {
         try {
-            Supplier supplier = new Supplier(supplier_name);
             supplierService.createSupplier(supplier);
             return Redirect("/admin/suppliers", true);
         } catch (Exception e) {
@@ -224,21 +223,25 @@ public class mainController {
         }
     }
 
-    @PostMapping({"/admin/suppliers/edit"})
-    public String suppliers_Edit(Model model,
-                            @RequestParam("id") int id,
-                            @RequestParam("name") String name){
-        try{
-            Supplier supplier = supplierService.findSupplierById(id);
-            supplier.setSuppliername(name);
-            supplierService.createSupplier(supplier);
-            return Redirect("/admin/suppliers", true);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(": " + e.getMessage());
-            return Redirect("/admin/suppliers", false);
-        }
-    }
+//    @PostMapping({"/admin/suppliers/edit"})
+//    public String suppliers_Edit(Model model,
+//                            @RequestParam("id") int id,
+//                            @RequestParam("name") String name,
+//                            @RequestParam("address") String address,
+//                            @RequestParam("contact") String contact){
+//        try{
+//            Supplier supplier = supplierService.findSupplierById(id);
+//            supplier.setSuppliername(name);
+//            supplier.setAddress(address);
+//            supplier.setContact(contact);
+//            supplierService.createSupplier(supplier);
+//            return Redirect("/admin/suppliers", true);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            System.out.println(": " + e.getMessage());
+//            return Redirect("/admin/suppliers", false);
+//        }
+//    }
 
     /********************* brands *********************/
 
@@ -426,4 +429,24 @@ public class mainController {
             return Redirect("/admin/units", false);
         }
     }
+
+    /***************************************************/
+    /********************* Product *********************/
+    /***************************************************/
+
+    @GetMapping("/admin/products")
+    public String products(Model model,
+                           @RequestParam(value = "success", defaultValue = "false") boolean success,
+                           @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
+        List<Products> products = productService.getAllProducts();
+        System.out.println(products);
+        model.addAttribute("products", products);
+        model.addAttribute("content", "pages/product/product_manager");
+        model.addAttribute("title", "Quản lý sản phẩm");
+
+        model.addAttribute("success", success);
+        model.addAttribute("unsuccess", unsuccess);
+        return template;
+    }
+
 }

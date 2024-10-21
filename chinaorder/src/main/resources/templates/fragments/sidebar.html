@@ -19,13 +19,13 @@
                 </a>
                 <ul>
                     <li sec:authorize="hasRole('ROLE_ADMIN')">
-                        <a th:href="'/Lab/admin/Equipment?username='+${#authentication.name}">
+                        <a th:href="'/Lengkeng/admin/products?username='+${#authentication.name}">
                             <i class="metismenu-icon pe-7s-server">
                             </i>DS sản phẩm
                         </a>
                     </li>
                     <li>
-                        <a th:href="'/Lab/admin/AllEquipment?username='+${#authentication.name}">
+                        <a th:href="'/Lengkeng/admin/variants?username='+${#authentication.name}">
                             <i class="metismenu-icon pe-7s-calculator">
                             </i> DS biến thể
                         </a>

@@ -1,21 +1,25 @@
-package com.shoponline.chinaorder.entity;
+package com.shoponline.chinaorder.dto;
 
+import com.shoponline.chinaorder.entity.Brands;
+import com.shoponline.chinaorder.entity.Categories;
+import com.shoponline.chinaorder.entity.Supplier;
+import com.shoponline.chinaorder.entity.Unit;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Entity
-@Table(name = "products")
-public class Products {
+@Builder
+public class ProductDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "product_name")
     private String productName;
 
     @ManyToOne
@@ -34,6 +38,5 @@ public class Products {
     @JoinColumn(name = "unit_id")
     private Unit unit;
 
-    @Column(name = "product_desc")
     private String productDesc;
 }

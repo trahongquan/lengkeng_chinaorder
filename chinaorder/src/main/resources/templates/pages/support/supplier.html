@@ -19,24 +19,36 @@
         </a>
     </h1>
     <!--<div th:replace="admin/add-nocite.html :: notice"></div>-->
-    <div class="form-group" style="display: flex ; justify-content: space-around">
-        <form th:action="@{'/Lengkeng/admin/suppliers/del'}" method="post">
-            <div>
-                <label for="supplier_id" >Tên Nhà cung cấp:</label>
-                <select class="form-control" id="supplier_id" name="id"  required>
-                    <option th:each="supplier : ${suppliersx}" th:value="${supplier.id}" th:text="${supplier.suppliername}"></option>
-                </select>
-                <label class="text-warning">Chỉ xóa được các nhà cung cấp chưa sử dụng</label>
-            </div>
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có thực sử muốn xóa này')" > Xóa </button>
+    <div class="form-group row d-flex justify-content-center align-content-center" style="display: flex ; justify-content: space-around">
+        <form th:action="@{'/Lengkeng/admin/suppliers/del'}" method="post" class="col-3 d-flex flex-column align-content-center justify-content-start mx-2">
+            <label for="supplier_id" >Tên Nhà cung cấp:</label>
+            <select class="form-control" id="supplier_id" name="id"  required>
+                <option th:each="supplier : ${suppliersx}" th:value="${supplier.id}" th:text="${supplier.suppliername}"></option>
+            </select>
+            <button type="submit" class="btn btn-danger mt-2" onclick="return confirm('Bạn có thực sử muốn xóa này')" > Xóa </button>
+            <label class="text-warning mt-2 btn">Chỉ xóa được các nhà cung cấp chưa sử dụng</label>
         </form>
-        <div style="display: flex; justify-content: space-around">
-            <form th:action="'/Lengkeng/admin/suppliers/add'" method="post">
-                <div style="margin-right: 10px">
-                    <label for="supplier_name" >Thêm Nhà cung cấp:</label>
-                    <input type="text" class="form-control" id="supplier_name" name="supplier_name" required>
+        <div style="display: flex; justify-content: space-around" class="col-8">
+            <form th:action="'/Lengkeng/admin/suppliers/add'" method="post" id="formSupplier"
+                  class="d-flex justify-content-center align-content-center flex-column">
+                <div class="row d-flex justify-content-center align-content-center">
+                    <input type="hidden" name="username" th:value="${#authentication.name}">
+                    <input type="hidden" name="id" id="id" th:value="0">
+                    <div class="col-4">
+                        <label for="name" >Tên nhà cung cấp:</label>
+                        <input type="text" class="form-control supplier" id="name" name="suppliername" placeholder="VD: Shop Hương Linh" required>
+                    </div>
+                    <div class="col-4">
+                        <label for="address" >Địa chỉ:</label>
+                        <input type="text" class="form-control supplier" id="address" name="address" placeholder="VD: số 4 tôn thất thiệp, ba đình, hà nội" required>
+                    </div>
+                    <div class="col-4">
+                        <label for="contact" >Thông tin liên lạc:</label>
+                        <input type="text" class="form-control supplier" id="contact" name="contact" placeholder="VD: 0357211198" required>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary" onclick="return confirm('Bạn có thực sử muốn thêm tên này')"> Thêm mới</button>
+                <button type="submit" id="btnSubmit" class="btn btn-primary mt-2"> Thêm mới</button>
+                <p class="text-warning mt-2 btn" id="warning">Chú ý: Click lại nút sửa một lần nữa để hủy chế độ sửa</p>
             </form>
         </div>
     </div>
@@ -48,6 +60,8 @@
                 <tr>
                     <th>STT</th>
                     <th>Tên nhà cung cấp</th>
+                    <th>Địa chỉ</th>
+                    <th>Liên lạc</th>
                     <th>Thao tác</th>
                     <!--<th>Loại quyền</th>-->
                 </tr>
@@ -56,6 +70,8 @@
                 <tr th:each="supplier, iter : ${suppliers}">
                     <td th:text="${iter.index + 1}"></td>
                     <td th:text="${supplier.suppliername}"></td>
+                    <td th:text="${supplier.address}"></td>
+                    <td th:text="${supplier.contact}"></td>
                     <td class="d-flex flex-row justify-content-center align-content-center">
                         <button type="button" class="form-control btn btn-primary btn-edit m-1"
                                 th:data-id="${supplier.id}"
@@ -69,6 +85,8 @@
                 <tr>
                     <th>STT</th>
                     <th>Tên nhà cung cấp</th>
+                    <th>Địa chỉ</th>
+                    <th>Liên lạc</th>
                     <th>Thao tác</th>
                     <!--<th>Loại quyền</th>-->
                 </tr>
@@ -76,28 +94,49 @@
             </table>
         </div>
     </div>
-    <!-- Popup -->
-    <div id="popup" class="popup">
-        <div class="popup-content">
-            <h2>Sửa thông tin </h2>
-            <h5 class="text-warning"><strong><span>Chú ý: </span></strong> không nên đổi trùng tên đã có</h5>
-            <form id="editForm" th:action="'/Lengkeng/admin/suppliers/edit'" method="post" >
-                <label for="name" >Tên :</label>
-                <div class="d-flex flex-row justify-content-center align-content-center">
-                    <input type="text" id="name" name="name" class="form-control text-danger font-weight-bold" required>
-                    <input type="hidden" id="id" name="id" class="form-control" required>
-                    <button type="submit" class="btn btn-primary" id="btnEdit">Sửa</button>
-                </div>
-            </form>
-            <br>
-            <button type="button" class="btn btn-secondary close-btn">Đóng</button>
-        </div>
-    </div>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="/js/popup.js"></script>
+    <!--<script src="/js/popup.js"></script>-->
     <script th:inline="javascript">
+        var inputs = $('.supplier');
+        $(document).ready(function () {
+            var suppliers = [[${suppliers}]];
+            $('#warning').hide();
+            $('.btn-edit').click(function() {
+                var supplier_id = $(this).attr('data-id');
+                var supplier = $.grep(suppliers, function(supplier1) {
+                    return supplier1.id == supplier_id;
+                });
+                console.log(supplier[0]);
+
+
+                if($('#id').val()==supplier_id){
+                    $('#id').val(0);
+                    $('#name').val("");
+                    $('#address').val("");
+                    $('#contact').val("");
+                    $('#btnSubmit').text('Thêm mới');
+                    inputs.each(function() {
+                        $(this).removeClass('font-weight-bold')
+                    })
+                    $('#warning').hide()
+                } else {
+                    // Populate the input and select fields with lesson information
+                    $('#id').val(supplier[0].id);
+                    $('#name').val(supplier[0].suppliername);
+                    $('#address').val(supplier[0].address);
+                    $('#contact').val(supplier[0].contact);
+                    $('#btnSubmit').text('Sửa');
+                    inputs.each(function() {
+                        $(this).addClass('font-weight-bold')
+                    })
+                    $('#warning').show();
+                }
+
+            })
+        })
     </script>
 </suplier>
 </body>

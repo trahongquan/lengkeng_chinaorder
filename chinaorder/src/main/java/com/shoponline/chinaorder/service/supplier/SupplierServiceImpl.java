@@ -34,7 +34,15 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public Supplier createSupplier(Supplier supplier) {
-        return supplierRepository.save(supplier);
+        if(supplier.getId()!=0){
+            Supplier supplier_old = this.findSupplierById(supplier.getId());
+            supplier_old.setSuppliername(supplier.getSuppliername());
+            supplier_old.setAddress(supplier.getAddress());
+            supplier_old.setContact(supplier.getContact());
+            return supplierRepository.save(supplier);
+        } else {
+            return supplierRepository.save(supplier);
+        }
     }
 
     @Override
