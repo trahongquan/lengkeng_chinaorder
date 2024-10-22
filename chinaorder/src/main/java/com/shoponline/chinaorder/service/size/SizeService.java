@@ -13,4 +13,6 @@ public interface SizeService {
     Sizes findSizeById(int id);
 
     void deleteSize(int id);
+
+    List<Sizes> findSizesNotUsedInVariants();
 }

@@ -10,15 +10,15 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name = "sizes")
-public class Sizes {
+@Table(name = "attribute")
+public class Attribute {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "size_name")
-    private String sizeName;
+    @Column(name = "name")
+    private String name;
 
-    public Sizes(String sizeName) {
-        this.sizeName = sizeName;
+    public Attribute(String name) {
+        this.name = name;
     }
 }

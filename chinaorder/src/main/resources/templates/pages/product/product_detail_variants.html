@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Employees</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<variant-manager>
+    <h1 class="text-center text-uppercase font-weight-bold mt-5">Danh sách Biến thế
+        <a href="/Lab/admin/Export/Managers" class="col-3">
+            <img src="/images/download.png" alt="Tải xuống" style="max-width: 2%">
+        </a>
+    </h1>
+    <form th:action="'/Lengkeng/admin/products/detail/addVariants'" method="post" id="formLesson"
+          class="d-flex justify-content-center align-content-center flex-column">
+        <!-- Thông tin Sản phẩm -->
+        <div class="row d-flex justify-content-between align-content-center border-bottom border-dark rounded p-1 mb-2"
+             th:object="${product}">
+            <div class="col-2">
+                    <span type="text" class="form-control font-weight-bold " required>Tên SP:
+                        <span class="text-primary product" th:text="*{productName}"></span>
+                </span>
+            </div>
+            <div class="col-2">
+                    <span type="text" class="form-control font-weight-bold " required>Danh mục:
+                            <span class="text-primary product" th:text="${product.category.catname}"></span>
+                    </span>
+            </div>
+            <div class="col-2">
+                    <span type="text" class="form-control font-weight-bold " required>Thương hiệu:
+                            <span class="text-primary product" th:text="${product.brand.brandname}"></span>
+                    </span>
+            </div>
+            <div class="col-3">
+                    <span type="text" class="form-control font-weight-bold " required>Nhà cung cấp:
+                            <span class="text-primary product" th:text="${product.supplier.suppliername}"></span>
+                    </span>
+            </div>
+            <div class="col-2">
+                    <span type="text" class="form-control font-weight-bold " required>Đơn vị tính:
+                            <span class="text-primary product" th:text="${product.unit.unit}"></span>
+                    </span>
+            </div>
+        </div>
+        <!-- Quản lý Biến thể-->
+        <div class="d-flex justify-content-center align-content-center flex-column ">
+            <div class="row d-flex justify-content-center align-content-between">
+                <input type="hidden" name="username" th:value="${#authentication.name}">
+                <input type="hidden" name="product" id="product" th:value="${product.id}">
+                <input type="hidden" name="id" id="id" th:value="0">
+                <div class="col-2">
+                    <label class="font-weight-bold" for="sku">Mã hàng:</label>
+                    <input type="text" class="form-control variant" id="sku" name="sku"
+                           placeholder="VD: Mã DM - Tên SP - Biến thể và size - Màu viết tắt" required>
+                </div>
+                <div class="col-2">
+                    <label class="font-weight-bold" for="stockQuantity">Tồn kho </label>
+                    <input type="number" class="form-control variant" id="stockQuantity" name="stockQuantity"
+                           placeholder="VD: 12" min="0" step="1" required>
+                </div>
+                <div class="col-2">
+                    <label class="font-weight-bold" for="size">Kích cỡ</label>
+                    <input type="checkbox" id="checkboxSize">
+                    <select name="size" id="size" class="form-control variant" disabled>
+                        <option th:each="size : ${sizes}" th:value="${size.id}" th:text="${size.sizeName}"></option>
+                    </select>
+                </div>
+                <div class="col-2">
+                    <label class="font-weight-bold" for="color">Màu sắc:</label>
+                    <select name="color" id="color" class="form-control variant">
+                        <option th:each="color : ${colors}" th:value="${color.id}"
+                                th:text="${color.color} + '/' + ${color.abbreviations}+ '/' + ${color.hexCode}"
+                                th:data-hexCode="${color.hexCode}"
+                                th:style="'background-color: ' + ${color.hexCode} + '; color: black;'"></option>
+                    </select>
+                </div>
+                <div class="col-2">
+                    <label class="font-weight-bold" for="costPrice">Giá nhập:</label>
+                    <input type="number" class="form-control variant" id="costPrice" name="costPrice"
+                           placeholder="VD: 250000" required>
+                </div>
+                <div class="col-2">
+                    <label class="font-weight-bold" for="sellingPrice">Giá bán:</label>
+                    <input type="number" class="form-control variant" id="sellingPrice" name="sellingPrice"
+                           placeholder="VD: 280000" required>
+                </div>
+            </div>
+            <button type="submit" id="btnSubmit" class="btn btn-primary mt-2"
+                    onclick="return confirm('Bạn có chắc chắn muốn thực hiện thao tác này???')"> Thêm biến thể mới
+            </button>
+            <p class="text-warning mt-2 btn" id="warning">Chú ý: Click lại nút sửa một lần nữa để hủy chế độ sửa</p>
+        </div>
+    </form>
+    <!-- Quản lý thuộc tính của sản phẩm-->
+    <form th:action="'/Lengkeng/admin/products/detail/addAttributes'" method="post" id="addAttributes" style="display: none">
+        <input type="hidden" name="product" th:value="${product.id}">
+        <div class="d-flex row flex-wrap justify-content-start" style="display: none">
+            <div class="d-flex flex-column justify-content-start align-content-center m-2 col-3">
+                <div class="d-flex row justify-content-center align-content-center">
+                    <!--<input type="date" id="date" class="form-control m-2 col-sm-6" name="using" th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">-->
+                    <select class="form-control col-6" name="attribute" required>
+                        <option th:each="attribute : ${attributes}" th:value="${attribute.id}" th:text="${attribute.name}"></option>
+                    </select>
+                    <button type="button" class="btnremove btn btn-primary col-3 ml-2" onclick="remove(this)"> <i class="fa fa-times-circle"> </i> </button>
+                </div>
+                <input type="search" class="form-control m-3" id="value" name="value" required
+                             th:placeholder="'Giá trị thuộc tính'">
+            </div>
+            <button type="button" class="btn btn-primary m-3"
+                    onclick="addInput(this)"> <i class="fa fa-plus-circle"></i> </button>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2"
+                onclick="return confirm('Bạn có chắc chắn muốn thực hiện thao tác này???')"> Thêm
+        </button>
+    </form>
+    <button type="button" class="btn btn-primary mt-2" id="add_Attribute"> Thêm thuộc tính mới
+    </button>
+    <button type="button" class="btn btn-primary mt-2 btn-edit" id="list_Attributes"> Xem các thuộc tính
+    </button>
+    <!-- Popup -->
+    <div id="popup" class="popup">
+        <div class="popup-content" style="max-width: 200rem; top: 25%; left: 17%">
+            <h2>Chi tiết các thuộc tính</h2>
+            <div class="main-card mb-3 card">
+                <div class="card-body">
+                    <table style="width: 100%;" id="popup-example" class="table table-hover table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên thuộc tính</th>
+                            <th>Giá trị</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="attributeValue, iter : ${attributeValues}">
+                                <td th:text="${iter.index + 1}"></td>
+                                <td th:text="${attributeValue.attribute.name}"></td>
+                                <td th:text="${attributeValue.value}"></td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên thuộc tính</th>
+                            <th>Giá trị</th>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <button type="button" class="btn btn-secondary close-btn">Đóng</button>
+        </div>
+    </div>
+    <br>
+    <div class="main-card mb-3 card">
+        <div class="card-body">
+            <table style="width: 100%;" id="example" class="table table-hover table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên SP</th>
+                    <th>SKU</th>
+                    <th>Kích cỡ</th>
+                    <th>Màu</th>
+                    <th>Giá nhập</th>
+                    <th>Giá bán</th>
+                    <th>Tồn kho</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="variant, iter : ${variants}">
+                    <td th:text="${iter.index + 1}"></td>
+                    <td th:text="${variant.product.productName}"></td>
+                    <td th:text="${variant.sku}"></td>
+                    <td> <span th:if="${variant.size != null}" th:text="${variant.size.sizeName}"></span></td>
+                    <td th:text="${variant.color.color}"></td>
+                    <td th:text="${variant.costPrice}"></td>
+                    <td th:text="${variant.sellingPrice}"></td>
+                    <td th:text="${variant.stockQuantity} + ' ' +${variant.product.unit.unit} "></td>
+                    <td>
+                        <div class="d-flex" style="display: flex; justify-content: center; align-items: center;">
+                            <button type="button" class="btn btn-sm btn-primary btn-edit-variant mr-1"
+                                    th:data-id="${variant.id}"
+                            >Sửa
+                            </button>
+                            <form th:action="@{'/Lengkeng/admin/variants/detail/' + ${variant.id}}"
+                                  method="get">
+                                <button type="submit" class="btn btn-info btn-sm mr-1">Chi tiết</button>
+                            </form>
+                            <form th:action="@{'/Lengkeng/admin/variants/del/' + ${variant.id}}"
+                                  method="POST">
+                                <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên SP</th>
+                    <th>SKU</th>
+                    <th>Kích cỡ</th>
+                    <th>Màu</th>
+                    <th>Giá nhập</th>
+                    <th>Giá bán</th>
+                    <th>Tồn kho</th>
+                    <th>Thao tác</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <script src="/js/popup.js" type="application/javascript"></script>
+    <script src="/js/change-color.js" type="application/javascript"></script>
+    <script src="/js/product/product_detail_variants.js" type="application/javascript"></script>
+    <script th:inline="javascript">
+        var inputs = $('.variant');
+        var variants = [[${variants}]];
+        var attributes = [[${attributes}]];
+    </script>
+</variant-manager>
+</body>
+</html>

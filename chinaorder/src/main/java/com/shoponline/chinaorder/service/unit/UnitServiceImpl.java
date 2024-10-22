@@ -34,7 +34,13 @@ public class UnitServiceImpl implements UnitService {
 
     @Override
     public Unit createUnit(Unit unit) {
-        return unitRepository.save(unit);
+        if(unit.getId() != 0){
+            Unit unit_old = this.findUnitById(unit.getId());
+            unit_old.setUnit(unit.getUnit());
+            return unitRepository.save(unit_old);
+        } else {
+            return unitRepository.save(unit);
+        }
     }
 
     @Override

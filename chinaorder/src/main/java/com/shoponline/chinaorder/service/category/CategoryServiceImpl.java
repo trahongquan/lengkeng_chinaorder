@@ -33,9 +33,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Categories createCategory(Categories category) {
-        return categoryRepository.save(category);
+        if(category.getId() != 0){
+            Categories category_old = this.findCategoryById(category.getId());
+            category_old.setCatname(category.getCatname());
+            return categoryRepository.save(category_old);
+        } else {
+            return categoryRepository.save(category);
+        }
     }
-
     @Override
     public Categories findCategoryById(int id) {
         return categoryRepository.findById(id).orElse(null);

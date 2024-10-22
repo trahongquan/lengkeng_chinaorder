@@ -27,7 +27,13 @@ public class BrandServiceImpl implements BrandService {
 
     @Override
     public Brands createBrand(Brands brand) {
-        return brandRepository.save(brand);
+        if(brand.getId() != 0){
+            Brands brand_old = this.findBrandById(brand.getId());
+            brand_old.setBrandname(brand.getBrandname());
+            return brandRepository.save(brand_old);
+        } else {
+            return brandRepository.save(brand);
+        }
     }
 
     @Override

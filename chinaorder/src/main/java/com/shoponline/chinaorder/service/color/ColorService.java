@@ -3,6 +3,7 @@ package com.shoponline.chinaorder.service.color;
 
 import com.shoponline.chinaorder.entity.Colors;
 
+import java.awt.*;
 import java.util.List;
 
 public interface ColorService {
@@ -13,4 +14,6 @@ public interface ColorService {
     Colors findColorById(int id);
 
     void deleteColor(int id);
+
+    List<Colors> findColorsNotUsedInVariants();
 }

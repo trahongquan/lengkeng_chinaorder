@@ -17,8 +17,14 @@ public class Colors {
     private int id;
 
     private String color;
+    private String abbreviations;
     @Column(name = "hex_code")
     private String hexCode;
-    private String abbreviations;
+
+    public Colors(String color, String abbreviations, String hexCode) {
+        this.color = color;
+        this.abbreviations = abbreviations;
+        this.hexCode = hexCode;
+    }
 }
 

@@ -1,6 +1,8 @@
 package com.shoponline.chinaorder.contrtoller.mainController;
 
 import com.shoponline.chinaorder.entity.*;
+import com.shoponline.chinaorder.service.attribute.AttributeService;
+import com.shoponline.chinaorder.service.attributevalue.attribute.AttributeValueService;
 import com.shoponline.chinaorder.service.authority.AuthorityService;
 import com.shoponline.chinaorder.service.brand.BrandService;
 import com.shoponline.chinaorder.service.cart.CartService;
@@ -34,6 +36,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Min;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -57,6 +60,8 @@ public class mainController {
     private final ProvinceService provinceService;
     private final ReviewService reviewService;
     private final SizeService sizeService;
+    private final AttributeService attributeService;
+    private final AttributeValueService attributeValueService;
     private final StatusService statusService;
     private final SupplierService supplierService;
     private final UnitService unitService;
@@ -64,7 +69,7 @@ public class mainController {
     private final VoucherService voucherService;
 
     @Autowired
-    public mainController(AuthorityService authorityService, UserService userService, BrandService brandService, CartService cartService, CategoryService categoryService, ColorService colorService, CommuneService communeService, DistrictService districtService, ImageService imageService, LogsService logsService, OrdersService ordersService, OrderItemService orderItemService, PeopleService peopleService, ProductService productService, ProvinceService provinceService, ReviewService reviewService, SizeService sizeService, StatusService statusService, SupplierService supplierService, UnitService unitService, VariantService variantService, VoucherService voucherService) {
+    public mainController(AuthorityService authorityService, UserService userService, BrandService brandService, CartService cartService, CategoryService categoryService, ColorService colorService, CommuneService communeService, DistrictService districtService, ImageService imageService, LogsService logsService, OrdersService ordersService, OrderItemService orderItemService, PeopleService peopleService, ProductService productService, ProvinceService provinceService, ReviewService reviewService, SizeService sizeService, AttributeService attributeService, AttributeValueService attributeValueService, StatusService statusService, SupplierService supplierService, UnitService unitService, VariantService variantService, VoucherService voucherService) {
         this.authorityService = authorityService;
         this.userService = userService;
         this.brandService = brandService;
@@ -82,6 +87,8 @@ public class mainController {
         this.provinceService = provinceService;
         this.reviewService = reviewService;
         this.sizeService = sizeService;
+        this.attributeService = attributeService;
+        this.attributeValueService = attributeValueService;
         this.statusService = statusService;
         this.supplierService = supplierService;
         this.unitService = unitService;
@@ -406,6 +413,190 @@ public class mainController {
         }
     }
 
+    /********************* sizes *********************/
+
+    @GetMapping("/admin/sizes")
+    public String size(Model model,
+                       @RequestParam(value = "success", defaultValue = "false") boolean success,
+                       @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
+        model.addAttribute("sizes", sizeService.getAllSizes());
+        model.addAttribute("sizesx", sizeService.findSizesNotUsedInVariants());
+        model.addAttribute("content", "pages/support/size");
+        model.addAttribute("title", "Quản lý đơn vị kích thước");
+
+        model.addAttribute("success", success);
+        model.addAttribute("unsuccess", unsuccess);
+        return template;
+    }
+
+    @PostMapping({"/admin/sizes/add"})
+    public String sizes_Add(Model model,
+                            @RequestParam("sizeName") String sizeName) {
+        try {
+            Sizes sizes = new Sizes(sizeName);
+            sizeService.createSize(sizes);
+            return Redirect("/admin/sizes", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi: " + e.getMessage());
+            return Redirect("/admin/sizes", false);
+        }
+    }
+
+
+    @PostMapping({"/admin/sizes/del"})
+    public String sizes_Del(Model model,
+                            @RequestParam("id") @Min(1) int size_id){
+        try{
+            sizeService.deleteSize(size_id);
+            return Redirect("/admin/sizes", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(": " + e.getMessage());
+            return Redirect("/admin/sizes", false);
+        }
+    }
+
+    @PostMapping({"/admin/sizes/edit"})
+    public String sizes_Edit(Model model,
+                             @RequestParam("id") int id,
+                             @RequestParam("name") String name){
+        try{
+            Sizes size = sizeService.findSizeById(id);
+            size.setSizeName(name);
+            sizeService.createSize(size);
+            return Redirect("/admin/sizes", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(": " + e.getMessage());
+            return Redirect("/admin/sizes", false);
+        }
+    }
+
+
+    /********************* attribute *********************/
+
+    @GetMapping("/admin/attributes")
+    public String attribute(Model model,
+                            @RequestParam(value = "success", defaultValue = "false") boolean success,
+                            @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
+        model.addAttribute("attributes", attributeService.getAllAttribute());
+        model.addAttribute("attributesx", attributeService.findAttributesNotUsedInAttributeValues());
+        model.addAttribute("content", "pages/support/attribute");
+        model.addAttribute("title", "Quản lý thuộc tính");
+
+        model.addAttribute("success", success);
+        model.addAttribute("unsuccess", unsuccess);
+        return template;
+    }
+    @PostMapping({"/admin/attributes/add"})
+    public String attributes_Add(Model model,
+                                 @RequestParam("name") String name) {
+        try {
+            Attribute attribute = new Attribute(name);
+            attributeService.createAttribute(attribute);
+            return Redirect("/admin/attributes", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi: " + e.getMessage());
+            return Redirect("/admin/attributes", false);
+        }
+    }
+    @PostMapping({"/admin/attributes/del"})
+    public String attributes_Del(Model model,
+                                 @RequestParam("id") @Min(1) int attribute_id){
+        try{
+            attributeService.deleteAttribute(attribute_id);
+            return Redirect("/admin/attributes", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(": " + e.getMessage());
+            return Redirect("/admin/attributes", false);
+        }
+    }
+
+    @PostMapping({"/admin/attributes/edit"})
+    public String attributes_Edit(Model model,
+                                  @RequestParam("id") int id,
+                                  @RequestParam("name") String name){
+        try{
+            Attribute attribute = attributeService.findAttributeById(id);
+            attribute.setName(name);
+            attributeService.createAttribute(attribute);
+            return Redirect("/admin/attributes", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(": " + e.getMessage());
+            return Redirect("/admin/attributes", false);
+        }
+    }
+
+    /********************* colors *********************/
+
+    @GetMapping("/admin/colors")
+    public String colors(Model model,
+                       @RequestParam(value = "success", defaultValue = "false") boolean success,
+                       @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
+        model.addAttribute("colors", colorService.getAllColors());
+        model.addAttribute("colorsx", colorService.findColorsNotUsedInVariants());
+        model.addAttribute("content", "pages/support/color");
+        model.addAttribute("title", "Quản lý đơn vị kích thước");
+
+        model.addAttribute("success", success);
+        model.addAttribute("unsuccess", unsuccess);
+        return template;
+    }
+
+    @PostMapping({"/admin/colors/add"})
+    public String colors_Add(Model model,
+                            @RequestParam("color") String color,
+                            @RequestParam("abbreviations") String abbreviations,
+                            @RequestParam("hexCode") String hexCode) {
+        try {
+            Colors color_ = new Colors(color, abbreviations, hexCode); //#EE82EE
+            colorService.createColor(color_);
+            return Redirect("/admin/colors", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi: " + e.getMessage());
+            return Redirect("/admin/colors", false);
+        }
+    }
+
+
+    @PostMapping({"/admin/colors/del"})
+    public String colors_Del(Model model,
+                            @RequestParam("id") @Min(1) int color_id){
+        try{
+            colorService.deleteColor(color_id);
+            return Redirect("/admin/colors", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(": " + e.getMessage());
+            return Redirect("/admin/colors", false);
+        }
+    }
+
+    @PostMapping({"/admin/colors/edit"})
+    public String colors_Edit(Model model,
+                             @RequestParam("id") int id,
+                              @RequestParam("color") String color,
+                              @RequestParam("abbreviations") String abbreviations,
+                              @RequestParam("hexCode") String hexCode){
+        try{
+            Colors colorById = colorService.findColorById(id);
+            colorById.setColor(color);
+            colorById.setAbbreviations(abbreviations);
+            colorById.setHexCode(hexCode);
+            colorService.createColor(colorById);
+            return Redirect("/admin/colors", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(": " + e.getMessage());
+            return Redirect("/admin/colors", false);
+        }
+    }
+
     /***************************************************/
     /********************* Product *********************/
     /***************************************************/
@@ -432,7 +623,6 @@ public class mainController {
     @PostMapping({"/admin/products/add"})
     public String Products_Add(Model model, @ModelAttribute Products products) {
         try {
-            System.out.println(products);
             productService.createProduct(products);
             return Redirect("/admin/products", true);
         } catch (Exception e) {
@@ -454,22 +644,61 @@ public class mainController {
         }
     }
 
-    @PostMapping({"/admin/products/detail"})
-    public String Products_detail(Model model, @ModelAttribute Products products) {
-//        try {
-//            System.out.println(products);
-//            productService.createProduct(products);
-//            return Redirect("/admin/products", true);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            System.out.println("Lỗi: " + e.getMessage());
-            return Redirect("/admin/products", false);
-//        }
+    @GetMapping("/admin/products/detail/{id}")
+    public String product_detail(Model model,
+                                 @PathVariable int id,
+                                 @RequestParam(value = "success", defaultValue = "false") boolean success,
+                                 @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
+        Products product = productService.findProductById(id);
+        List<Variants> variants = variantService.FindAllByProduct(product);
+        model.addAttribute("attributeValues", attributeValueService.findAllByProduct(product));
+        model.addAttribute("product", product);
+        model.addAttribute("variants", variants);
+        model.addAttribute("colors", colorService.getAllColors());
+        model.addAttribute("sizes", sizeService.getAllSizes());
+        model.addAttribute("attributes", attributeService.getAllAttribute());
+        model.addAttribute("content", "pages/product/product_detail_variants");
+        model.addAttribute("title", "Quản lý biến thể của " + product.getProductName());
+
+        model.addAttribute("success", success);
+        model.addAttribute("unsuccess", unsuccess);
+        return template;
+    }
+
+    @PostMapping({"/admin/products/detail/addVariants"})
+    public String Products_detail_addVariants(Model model, @ModelAttribute Variants variants) {
+        try {
+            variantService.createVariant(variants);
+            return Redirect("/admin/products/detail/"+variants.getProduct().getId(), true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi: " + e.getMessage());
+            return Redirect("/admin/products/detail/"+variants.getProduct().getId(), false);
+        }
+    }
+
+    @PostMapping({"/admin/products/detail/addAttributes"})
+    public String Products_detail_addAttributes(Model model, @RequestParam("product") int product_id,
+                                                @RequestParam("attribute") List<Integer> attribute_ids,
+                                                @RequestParam("value") List<String> values) {
+        try {
+            List<AttributeValue> attributeValues = new ArrayList<>();
+            Products product = productService.findProductById(product_id);
+            for (int i = 0; i < values.size(); i++) {
+                attributeValues.add(new AttributeValue(attributeService.findAttributeById(attribute_ids.get(i)), product, values.get(i)));
+            }
+            attributeValues.forEach(a -> attributeValueService.createAttributeValue(a));
+            return Redirect("/admin/products/detail/"+ product_id, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi: " + e.getMessage());
+            return Redirect("/admin/products/detail/"+product_id, false);
+        }
     }
 
 
     /***************************************************/
-    /********************* Product *********************/
+    /********************* Variants *********************/
     /***************************************************/
 
     @GetMapping("/admin/variants")
@@ -494,7 +723,6 @@ public class mainController {
     @PostMapping({"/admin/variants/add"})
     public String Variants_Add(@ModelAttribute Variants variants) {
         try {
-            System.out.println(variants);
             variantService.createVariant(variants);
             return Redirect("/admin/variants", true);
         } catch (Exception e) {

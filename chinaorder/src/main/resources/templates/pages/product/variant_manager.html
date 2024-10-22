@@ -12,13 +12,6 @@
                 <img src="/images/download.png" alt="Tải xuống" style="max-width: 2%">
             </a>
         </h1>
-        <!--<h1 style=" text-align: center; font-size: 2em" th:text="'Số lượng: ' + ${#lists.size(managerDTOS)}"></h1>
-        <br>
-        <div class="d-flex justify-content-around align-content-center">
-            <a href="/Lab/admin/Manager/add">
-                <button type="button" class="btn btn-primary font-bold font-size-xlg">Thêm người Quản lý</button>
-            </a>
-        </div>-->
     <form th:action="'/Lengkeng/admin/variants/add'" method="post" id="formLesson"
           class="d-flex justify-content-center align-content-center flex-column">
         <div class="row d-flex justify-content-center align-content-center">
@@ -43,7 +36,7 @@
             <div class="col-2">
                 <div>
                     <label for="sku" >Mã hàng:</label>
-                    <input type="text" class="form-control variant" id="sku" name="sku" placeholder="VD: TPN-AD01-S-RD" required>
+                    <input type="text" class="form-control variant" id="sku" name="sku" placeholder="VD: Mã DM - Tên SP - Biến thể và size - Màu viết tắt" required>
                 </div>
                 <div>
                     <label for="stockQuantity">Tồn kho </label>
@@ -54,6 +47,7 @@
                 <div class="col-6">
                     <div>
                         <label for="size"> Kích cỡ</label>
+                        <input type="checkbox" id="checkboxSize">
                         <select name="size" id="size"  class="form-control variant">
                             <option th:each="size : ${sizes}" th:value="${size.id}"
                                     th:text="${size.sizeName}"></option>
@@ -63,7 +57,9 @@
                         <label for="color" >Màu sắc:</label>
                         <select name="color" id="color" class="form-control variant">
                             <option th:each="color : ${colors}" th:value="${color.id}"
-                                    th:text="${color.color}"></option>
+                                    th:text="${color.color} + '/' + ${color.abbreviations}+ '/' + ${color.hexCode}"
+                                    th:data-hexCode="${color.hexCode}"
+                                    th:style="'background-color: ' + ${color.hexCode} + '; color: black;'"></option>
                         </select>
                     </div>
                 </div>
@@ -105,14 +101,16 @@
                         <td th:text="${iter.index + 1}"></td>
                         <td th:text="${variant.product.productName}"></td>
                         <td th:text="${variant.sku}"></td>
-                        <td th:text="${variant.size.sizeName}"></td>
+                        <td >
+                            <span th:if="${variant.size != null}" th:text="${variant.size.sizeName}"></span>
+                        </td>
                         <td th:text="${variant.color.color}"></td>
                         <td th:text="${variant.costPrice}"></td>
                         <td th:text="${variant.sellingPrice}"></td>
                         <td th:text="${variant.stockQuantity} + ' ' +${variant.product.unit.unit} "></td>
                         <td>
                             <div class="d-flex" style="display: flex; justify-content: center; align-items: center;">
-                                <button type="button" class="btn btn-sm btn-primary btn-edit mr-1"
+                                <button type="button" class="btn btn-sm btn-primary btn-edit-variant mr-1"
                                         th:data-id="${variant.id}"
                                 >Sửa</button>
                                 <form th:action="@{'/Lengkeng/admin/variants/detail/' + ${variant.id}}"
@@ -145,63 +143,9 @@
                 </table>
             </div>
         </div>
+    <script src="/js/change-color.js" type="application/javascript"></script>
     <script th:inline="javascript">
-        var inputs = $('.variant');
-        $(document).ready(function () {
-            var variants = [[${variants}]];
-            $('#warning').hide();
-            $('.btn-edit').click(function() {
-                var variant_id = $(this).attr('data-id');
-                var variant = $.grep(variants, function(variant1) {
-                    return variant1.id == variant_id;
-                });
-                console.log(variant[0]);
-
-
-                if($('#id').val()==variant_id){
-                    $('#id').val(0);
-                    $('#category').prop('selectedIndex', 0);
-                    $('#product').prop('selectedIndex', 0);
-                    $('#sku').val("");
-                    $('#size').prop('selectedIndex', 0);
-                    $('#color').prop('selectedIndex', 0);
-                    $('#costPrice').val("");
-                    $('#sellingPrice').val("");
-                    $('#stockQuantity').val("");
-                    $('#btnSubmit').text('Thêm mới');
-                    inputs.each(function() {
-                        $(this).removeClass('font-weight-bold')
-                    })
-                    $('#warning').hide()
-                }
-                else {
-                    // Populate the input and select fields with lesson information
-                    $('#id').val(variant[0].id);
-                    $('#category').val(variant[0].product.category.id);
-                    $('#product').val(variant[0].product.id);
-                    $('#sku').val(variant[0].sku);
-                    $('#size').val(variant[0].size.id);
-                    $('#color').val(variant[0].color.id);
-                    $('#costPrice').val(variant[0].costPrice);
-                    $('#sellingPrice').val(variant[0].sellingPrice);
-                    $('#stockQuantity').val(variant[0].stockQuantity);
-                    $('#btnSubmit').text('Sửa');
-                    inputs.each(function() {
-                        $(this).addClass('font-weight-bold')
-                    })
-                    $('#warning').show();
-                }
-
-                function selectOptionById(elementId, valueToSelect) {
-                    $('#' + elementId + ' option').each(function() {
-                        if ($(this).text() === valueToSelect) {
-                            $(this).prop('selected', true);
-                        }
-                    });
-                }
-
-            })
-        })
+        var variants = [[${variants}]];
     </script>
     </variant-manager>
 </body>
