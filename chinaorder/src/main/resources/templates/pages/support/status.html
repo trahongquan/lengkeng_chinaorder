@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add new Brand or Category</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Phone</title>
+    <!-- Link to Bootstrap CSS for styling -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!--<link rel="stylesheet" th:href="@{/css/styles.css}">-->
+</head>
+<body>
+<!--<div th:replace="admin/headerAdmin :: header-admin"></div>-->
+<suplier>
+    <h1 style="text-align: center" class="text-uppercase font-weight-bold"> Danh mục trạng thái đặt hàng
+        <a th:href="'/Lab/admin/Export/ManagingUnits'" >
+            <img src="/images/download.png" alt="Tải xuống" style="max-width: 2%" >
+        </a>
+    </h1>
+    <!--<div th:replace="admin/add-nocite.html :: notice"></div>-->
+    <div class="form-group" style="display: flex ; justify-content: space-around">
+        <form th:action="@{'/Lengkeng/admin/status/del'}" method="post">
+            <div>
+                <label for="status_id" >Tên trạng thái:</label>
+                <select class="form-control" id="status_id" name="id"  required>
+                    <option th:each="status : ${liststatusx}" th:value="${status.id}" th:text="${status.statusname}"></option>
+                </select>
+                <label for="status_id" class="text-warning">Chỉ xóa được các đươn vị chưa sử dụng</label>
+            </div>
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có thực sử muốn xóa đơn vị này')" > Xóa </button>
+        </form>
+        <div style="display: flex; justify-content: space-around">
+            <form th:action="'/Lengkeng/admin/status/add'" method="post">
+                <div style="margin-right: 10px">
+                    <label for="status_name" >Thêm trạng thái:</label>
+                    <input type="text" class="form-control" id="status_name" name="status_name" required>
+                </div>
+                <button type="submit" class="btn btn-primary" onclick="return confirm('Bạn có thực sử muốn thêm đơn vị này')"> Thêm mới</button>
+            </form>
+        </div>
+    </div>
+    <br>
+    <div class="main-card mb-3 card">
+        <div class="card-body">
+            <table style="width: 100%;" id="example" class="table table-hover table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="status, iter : ${liststatus}">
+                    <td th:text="${iter.index + 1}"></td>
+                    <td th:text="${status.statusname}"></td>
+                    <td class="d-flex flex-row justify-content-center align-content-center">
+                        <button type="button" class="form-control btn btn-primary btn-edit m-1"
+                                th:data-id="${status.id}"
+                                th:data-name="${status.statusname}"
+                        >Sửa</button>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <!-- Popup -->
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <h2>Sửa thông tin </h2>
+            <h5 class="text-warning"><strong><span>Chú ý: </span></strong> không nên đổi trùng tên đã có</h5>
+            <form id="editForm" th:action="'/Lengkeng/admin/status/edit'" method="post" >
+                <label for="name" >Tên :</label>
+                <div class="d-flex flex-row justify-content-center align-content-center">
+                    <input type="text" id="name" name="name" class="form-control text-danger font-weight-bold" required>
+                    <input type="hidden" id="id" name="id" class="form-control" required>
+                    <button type="submit" class="btn btn-primary" id="btnEdit">Sửa</button>
+                </div>
+            </form>
+            <br>
+            <button type="button" class="btn btn-secondary close-btn">Đóng</button>
+        </div>
+    </div>
+    <script src="/js/popup.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script th:inline="javascript">
+    </script>
+</suplier>
+</body>
+</html>

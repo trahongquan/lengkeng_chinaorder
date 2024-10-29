@@ -33,8 +33,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.constraints.Min;
+import java.io.File;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -531,12 +535,71 @@ public class mainController {
         }
     }
 
+    /********************* status *********************/
+
+    @GetMapping("/admin/status")
+    public String status(Model model,
+                         @RequestParam(value = "success", defaultValue = "false") boolean success,
+                         @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
+        model.addAttribute("liststatus", statusService.getAllStatuses());
+        model.addAttribute("liststatusx", statusService.findStatusNotUsedInOrder());
+        model.addAttribute("content", "pages/support/status");
+        model.addAttribute("title", "Quản lý trạng thái đơn");
+
+        model.addAttribute("success", success);
+        model.addAttribute("unsuccess", unsuccess);
+        return template;
+    }
+
+    @PostMapping({"/admin/status/add"})
+    public String status_Add(Model model,
+                             @RequestParam("status_name") String status_name) {
+        try {
+            Status status = new Status(status_name); //#EE82EE
+            statusService.createStatus(status);
+            return Redirect("/admin/status", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi: " + e.getMessage());
+            return Redirect("/admin/status", false);
+        }
+    }
+
+
+    @PostMapping({"/admin/status/del"})
+    public String status_Del(Model model,
+                             @RequestParam("id") @Min(1) int status_id){
+        try{
+            statusService.deleteStatus(status_id);
+            return Redirect("/admin/status", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(": " + e.getMessage());
+            return Redirect("/admin/status", false);
+        }
+    }
+
+    @PostMapping({"/admin/status/edit"})
+    public String status_Edit(Model model,
+                              @RequestParam("id") int id,
+                              @RequestParam("name") String statusname){
+        try{
+            Status status = statusService.findStatusById(id);
+            status.setStatusname(statusname);
+            return Redirect("/admin/status", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(": " + e.getMessage());
+            return Redirect("/admin/status", false);
+        }
+    }
+
     /********************* colors *********************/
 
     @GetMapping("/admin/colors")
     public String colors(Model model,
-                       @RequestParam(value = "success", defaultValue = "false") boolean success,
-                       @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
+                         @RequestParam(value = "success", defaultValue = "false") boolean success,
+                         @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
         model.addAttribute("colors", colorService.getAllColors());
         model.addAttribute("colorsx", colorService.findColorsNotUsedInVariants());
         model.addAttribute("content", "pages/support/color");
@@ -549,9 +612,9 @@ public class mainController {
 
     @PostMapping({"/admin/colors/add"})
     public String colors_Add(Model model,
-                            @RequestParam("color") String color,
-                            @RequestParam("abbreviations") String abbreviations,
-                            @RequestParam("hexCode") String hexCode) {
+                             @RequestParam("color") String color,
+                             @RequestParam("abbreviations") String abbreviations,
+                             @RequestParam("hexCode") String hexCode) {
         try {
             Colors color_ = new Colors(color, abbreviations, hexCode); //#EE82EE
             colorService.createColor(color_);
@@ -566,7 +629,7 @@ public class mainController {
 
     @PostMapping({"/admin/colors/del"})
     public String colors_Del(Model model,
-                            @RequestParam("id") @Min(1) int color_id){
+                             @RequestParam("id") @Min(1) int color_id){
         try{
             colorService.deleteColor(color_id);
             return Redirect("/admin/colors", true);
@@ -579,7 +642,7 @@ public class mainController {
 
     @PostMapping({"/admin/colors/edit"})
     public String colors_Edit(Model model,
-                             @RequestParam("id") int id,
+                              @RequestParam("id") int id,
                               @RequestParam("color") String color,
                               @RequestParam("abbreviations") String abbreviations,
                               @RequestParam("hexCode") String hexCode){
@@ -654,6 +717,7 @@ public class mainController {
         model.addAttribute("attributeValues", attributeValueService.findAllByProduct(product));
         model.addAttribute("product", product);
         model.addAttribute("variants", variants);
+        model.addAttribute("images", imageService.getAllImages());
         model.addAttribute("colors", colorService.getAllColors());
         model.addAttribute("sizes", sizeService.getAllSizes());
         model.addAttribute("attributes", attributeService.getAllAttribute());
@@ -695,6 +759,51 @@ public class mainController {
             return Redirect("/admin/products/detail/"+product_id, false);
         }
     }
+    String UPLOAD_DIR = "src/main/resources/static/images/products";
+    @PostMapping("/admin/products/detail/uploadImage")
+    public String uploadFiles(@RequestParam("files") MultipartFile[] files,
+                              @RequestParam("product_id") int product_id,
+                              @RequestParam("variant_id") int variant_id) {
+        String UPLOAD_DIR_NEW = "images/products";
+        String NEW_FOLDER = product_id + "/" + variant_id;
+        String productDir = UPLOAD_DIR + "/" + NEW_FOLDER;
+        File productDirFile = new File(productDir);
+        if (!productDirFile.exists()) {
+            productDirFile.mkdirs();
+        }
+        for (MultipartFile file : files) {
+            if (file.isEmpty()) continue;
+            try {
+                String filePath = UPLOAD_DIR_NEW + "/" + NEW_FOLDER + "/" + file.getOriginalFilename();
+                file.transferTo(new File(filePath));
+                Variants variant = variantService.findVariantById(variant_id);
+                imageService.createImage(new Image(variant, filePath));
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                return Redirect("/admin/products/detail/" + product_id, false);
+            }
+        }
+        return Redirect("/admin/products/detail/" + product_id, true);
+    }
+//    @PostMapping("/admin/products/detail/uploadImage")
+//    public String uploadFiles(@RequestParam("files") MultipartFile[] files, @RequestParam("product_id") int product_id) {
+//        StringBuilder message = new StringBuilder();
+//        System.out.println("files.length = " + files.length);
+//        System.out.println(files);
+//        for (MultipartFile file : files) {
+//            if (file.isEmpty()) continue;
+//            try {
+//                String filePath = UPLOAD_DIR + file.getOriginalFilename();
+//                System.out.println(filePath);
+//                file.transferTo(new File(filePath));
+//                message.append("Uploaded: ").append(file.getOriginalFilename()).append("<br/>");
+//            } catch (IOException e) {
+//                message.append("Failed to upload: ").append(file.getOriginalFilename()).append("<br/>");
+//                return Redirect("/admin/products/detail/"+product_id, false);
+//            }
+//        }
+//        return Redirect("/admin/products/detail/"+product_id, true);
+//    }
 
 
     /***************************************************/

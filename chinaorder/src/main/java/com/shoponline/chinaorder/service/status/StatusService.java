@@ -13,4 +13,7 @@ public interface StatusService {
     Status findStatusById(int id);
 
     void deleteStatus(int id);
+
+    List<Status> findStatusNotUsedInOrder();
+
 }

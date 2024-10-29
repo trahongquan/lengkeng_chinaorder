@@ -39,7 +39,7 @@ CREATE TABLE `address` (
   CONSTRAINT `fk_districtid_address_district` FOREIGN KEY (`district_id`) REFERENCES `district` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_peopleid_address_people` FOREIGN KEY (`people_id`) REFERENCES `people` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_provinceid_address_province` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,7 +48,62 @@ CREATE TABLE `address` (
 
 LOCK TABLES `address` WRITE;
 /*!40000 ALTER TABLE `address` DISABLE KEYS */;
+INSERT INTO `address` VALUES (1,25,1,1,1,'10 hùng vương',0);
 /*!40000 ALTER TABLE `address` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `attribute`
+--
+
+DROP TABLE IF EXISTS `attribute`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `attribute` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `attribute`
+--
+
+LOCK TABLES `attribute` WRITE;
+/*!40000 ALTER TABLE `attribute` DISABLE KEYS */;
+INSERT INTO `attribute` VALUES (1,'Bộ nhớ trong (ROM)'),(2,'Bộ nhớ tạm (RAM)'),(3,'Hỗ trợ 5G');
+/*!40000 ALTER TABLE `attribute` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `attribute_value`
+--
+
+DROP TABLE IF EXISTS `attribute_value`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `attribute_value` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `attribute_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `value` text NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_attribute_id_attribute_value_product_idx` (`product_id`),
+  KEY `fk_product_id_attribute_value_product_idx` (`attribute_id`),
+  CONSTRAINT `fk_attribute_id_attribute_value_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_product_id_attribute_value_product` FOREIGN KEY (`attribute_id`) REFERENCES `attribute` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `attribute_value`
+--
+
+LOCK TABLES `attribute_value` WRITE;
+/*!40000 ALTER TABLE `attribute_value` DISABLE KEYS */;
+INSERT INTO `attribute_value` VALUES (1,1,3,'256GB'),(2,2,3,'12GB'),(3,3,3,'Có hỗ trợ 5G');
+/*!40000 ALTER TABLE `attribute_value` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -63,7 +118,7 @@ CREATE TABLE `authorities` (
   `username` varchar(255) COLLATE utf8_bin NOT NULL,
   `authority` varchar(255) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -72,7 +127,7 @@ CREATE TABLE `authorities` (
 
 LOCK TABLES `authorities` WRITE;
 /*!40000 ALTER TABLE `authorities` DISABLE KEYS */;
-INSERT INTO `authorities` VALUES (1,'admin@xyz','ROLE_ADMIN');
+INSERT INTO `authorities` VALUES (1,'admin@xyz','ROLE_ADMIN'),(2,'manager@xyz','ROLE_MANAGER'),(3,'customer@xyz','ROLE_CUSTOMER');
 /*!40000 ALTER TABLE `authorities` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -87,7 +142,7 @@ CREATE TABLE `brands` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `brandname` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -96,6 +151,7 @@ CREATE TABLE `brands` (
 
 LOCK TABLES `brands` WRITE;
 /*!40000 ALTER TABLE `brands` DISABLE KEYS */;
+INSERT INTO `brands` VALUES (1,'S-WEAR'),(2,'Adidas'),(3,'UNIQ'),(4,'Apple');
 /*!40000 ALTER TABLE `brands` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -148,7 +204,7 @@ CREATE TABLE `categories` (
 
 LOCK TABLES `categories` WRITE;
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
-INSERT INTO `categories` VALUES (1,'Trang phục nữ'),(2,'Trang phục nam'),(3,'Trang phục trẻ em'),(4,'Đồ nội thất, decor'),(5,'Đồ gia dụng'),(6,'Đồ độc lạ'),(7,'Đồ điện tử');
+INSERT INTO `categories` VALUES (1,'Trang phục nữ'),(2,'Trang phục nam'),(3,'Trang phục trẻ em'),(4,'Đồ nội thất, đồ decor'),(5,'Đồ gia dụng'),(6,'Đồ độc lạ'),(7,'Đồ điện tử');
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -162,9 +218,10 @@ DROP TABLE IF EXISTS `colors`;
 CREATE TABLE `colors` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `color` varchar(255) NOT NULL,
+  `abbreviations` varchar(45) NOT NULL,
   `hex_code` varchar(7) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -173,6 +230,7 @@ CREATE TABLE `colors` (
 
 LOCK TABLES `colors` WRITE;
 /*!40000 ALTER TABLE `colors` DISABLE KEYS */;
+INSERT INTO `colors` VALUES (1,'Đỏ','RD','#FF0000'),(2,'Xanh lá cây','GN','#008000'),(3,'Xanh dương','BL','#0000FF'),(4,'Vàng','YE','#FFFF00'),(5,'Trắng','WH','#ffffff'),(6,'Đen','BK','#000000'),(7,'Cam','OR','#FFA500'),(8,'Tím','PU','#800080'),(9,'Nâu','BR','#A52A2A'),(10,'Xám','GR','#808080'),(11,'Hồng','PK','#FFC0CB'),(12,'Ngọc lam','TEA','#008080'),(13,'Vàng chanh','LEY','#FFD700'),(14,'Tím phớt','VIO','#ee82ee');
 /*!40000 ALTER TABLE `colors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -232,6 +290,34 @@ INSERT INTO `district` VALUES (1,'Quận Ba Đình',1,1,0),(2,'Quận Hoàn Ki�
 UNLOCK TABLES;
 
 --
+-- Table structure for table `image`
+--
+
+DROP TABLE IF EXISTS `image`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `image` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `variant_id` int(11) NOT NULL,
+  `type` varchar(45) NOT NULL,
+  `imgname` text,
+  `imgurl` text,
+  PRIMARY KEY (`id`),
+  KEY `fk_variant_id_image_variant_idx` (`variant_id`),
+  CONSTRAINT `fk_variant_id_image_variant` FOREIGN KEY (`variant_id`) REFERENCES `variants` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `image`
+--
+
+LOCK TABLES `image` WRITE;
+/*!40000 ALTER TABLE `image` DISABLE KEYS */;
+/*!40000 ALTER TABLE `image` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `logs`
 --
 
@@ -266,15 +352,17 @@ CREATE TABLE `order` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `employee_id` int(11) NOT NULL,
   `custormer_id` int(11) NOT NULL,
-  `status` varchar(45) NOT NULL,
+  `status_id` int(11) NOT NULL,
   `creation_date` date NOT NULL,
   `approval_date` date NOT NULL,
   `total_amount` decimal(30,2) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_customer_id_order_people_idx` (`custormer_id`),
   KEY `fk_employee_id_order_people_idx` (`employee_id`),
+  KEY `fk_status_id_order_status_idx` (`status_id`),
   CONSTRAINT `fk_customer_id_order_people` FOREIGN KEY (`custormer_id`) REFERENCES `people` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_employee_id_order_people` FOREIGN KEY (`employee_id`) REFERENCES `people` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_employee_id_order_people` FOREIGN KEY (`employee_id`) REFERENCES `people` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_status_id_order_status` FOREIGN KEY (`status_id`) REFERENCES `status` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -301,7 +389,7 @@ CREATE TABLE `order_item` (
   `product_id` int(11) NOT NULL,
   `cost_price` decimal(30,2) NOT NULL,
   `selling_price` decimal(30,2) NOT NULL,
-  `discount` decimal(5,2) NOT NULL,
+  `voucher_id` int(11) NOT NULL,
   `discounted_price` decimal(30,2) NOT NULL,
   `quantity` int(11) NOT NULL,
   `amount` decimal(30,2) NOT NULL,
@@ -309,9 +397,11 @@ CREATE TABLE `order_item` (
   KEY `fk_variant_id_order_item_variant_idx` (`variant_id`),
   KEY `fk_product_id_order_item_variant_idx` (`product_id`),
   KEY `fk_order_id_order_item_order_idx` (`order_id`),
+  KEY `fk_voucher_id_order_item_voucher_idx` (`voucher_id`),
   CONSTRAINT `fk_order_id_order_item_order` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_product_id_order_item_product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_variant_id_order_item_variant` FOREIGN KEY (`variant_id`) REFERENCES `variants` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_variant_id_order_item_variant` FOREIGN KEY (`variant_id`) REFERENCES `variants` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_voucher_id_order_item_voucher` FOREIGN KEY (`voucher_id`) REFERENCES `voucher` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -339,7 +429,7 @@ CREATE TABLE `people` (
   `address_default` int(11) DEFAULT NULL,
   `is_delete` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -348,7 +438,7 @@ CREATE TABLE `people` (
 
 LOCK TABLES `people` WRITE;
 /*!40000 ALTER TABLE `people` DISABLE KEYS */;
-INSERT INTO `people` VALUES (25,'admin','admin@xyz','88888888',1,0);
+INSERT INTO `people` VALUES (25,'admin','admin@xyz','88888888',1,0),(26,'manager','manager@xyz','66666666',1,0),(27,'customer','customer@xyz','55555555',1,0);
 /*!40000 ALTER TABLE `people` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -364,19 +454,20 @@ CREATE TABLE `products` (
   `product_name` varchar(255) NOT NULL,
   `product_cat_id` int(11) NOT NULL,
   `product_brand_id` int(11) DEFAULT NULL,
-  `product_supploer_id` int(11) DEFAULT NULL,
+  `product_supplier_id` int(11) DEFAULT NULL,
   `unit_id` int(11) NOT NULL,
   `product_desc` text,
+  `is_delete` tinyint(2) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_product_cat_idx` (`product_cat_id`),
   KEY `fk_product_brand_idx` (`product_brand_id`),
-  KEY `fk_product_supplier_idx` (`product_supploer_id`),
+  KEY `fk_product_supplier_idx` (`product_supplier_id`),
   KEY `fk_unit_id_product_unit_idx` (`unit_id`),
   CONSTRAINT `fk_product_brand` FOREIGN KEY (`product_brand_id`) REFERENCES `brands` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_product_cat` FOREIGN KEY (`product_cat_id`) REFERENCES `categories` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_product_supplier` FOREIGN KEY (`product_supploer_id`) REFERENCES `supplier` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_product_supplier` FOREIGN KEY (`product_supplier_id`) REFERENCES `supplier` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_unit_id_product_unit` FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -385,6 +476,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
+INSERT INTO `products` VALUES (1,'Áo dài cách tân',2,1,2,1,'Áo dài ngày lễ tết hoặc cưới hỏi',0),(2,'Áo dài cách tân nữ',1,1,2,1,'Áo dài ngày lễ tết hoặc cưới hỏi',0),(3,'Iphone 16 pro max',7,4,1,1,'Điện thoại cao cấp của Apple năm 2024',0);
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -457,7 +549,7 @@ CREATE TABLE `sizes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `size_name` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -466,7 +558,31 @@ CREATE TABLE `sizes` (
 
 LOCK TABLES `sizes` WRITE;
 /*!40000 ALTER TABLE `sizes` DISABLE KEYS */;
+INSERT INTO `sizes` VALUES (1,'XS'),(2,'S'),(3,'M'),(4,'L'),(5,'XL'),(6,'XXL'),(7,'XXXL');
 /*!40000 ALTER TABLE `sizes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `status`
+--
+
+DROP TABLE IF EXISTS `status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `status` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `statusname` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `status`
+--
+
+LOCK TABLES `status` WRITE;
+/*!40000 ALTER TABLE `status` DISABLE KEYS */;
+/*!40000 ALTER TABLE `status` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -479,8 +595,10 @@ DROP TABLE IF EXISTS `supplier`;
 CREATE TABLE `supplier` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `suppliername` varchar(255) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `contact` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Nhà cung cấp (khác với nhãn hàng brand)';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Nhà cung cấp (khác với nhãn hàng brand)';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -489,6 +607,7 @@ CREATE TABLE `supplier` (
 
 LOCK TABLES `supplier` WRITE;
 /*!40000 ALTER TABLE `supplier` DISABLE KEYS */;
+INSERT INTO `supplier` VALUES (1,'Shop Hoàng Nam','số 4 tôn thất thiệp, ba đình, hà nội','0356911600'),(2,'Shop Thủy Ngọc','81 hào nam, đống đa, hà nội','036489189'),(4,'Shop test','87 giáp hải, gia lâm, hà nội','xyz@gmail.com');
 /*!40000 ALTER TABLE `supplier` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -503,7 +622,7 @@ CREATE TABLE `unit` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `unit` varchar(45) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -512,6 +631,7 @@ CREATE TABLE `unit` (
 
 LOCK TABLES `unit` WRITE;
 /*!40000 ALTER TABLE `unit` DISABLE KEYS */;
+INSERT INTO `unit` VALUES (1,'chiếc'),(2,'cái'),(3,'bộ'),(4,'đôi (cặp)');
 /*!40000 ALTER TABLE `unit` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -523,7 +643,7 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `people_id` int(11) NOT NULL,
   `username` varchar(255) NOT NULL,
   `password` text NOT NULL,
@@ -532,7 +652,7 @@ CREATE TABLE `users` (
   UNIQUE KEY `username_UNIQUE` (`username`),
   KEY `fk_peopleid_users_people_idx` (`people_id`),
   CONSTRAINT `fk_peopleid_users_people` FOREIGN KEY (`people_id`) REFERENCES `people` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -541,7 +661,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,25,'admin@xyz','$2a$10$HTI8SIV7gwcBz5z1kaKHjeUnZr2mwME24BXjlu29QpmVxDQIZd45q',1);
+INSERT INTO `users` VALUES (1,25,'admin@xyz','$2a$10$HTI8SIV7gwcBz5z1kaKHjeUnZr2mwME24BXjlu29QpmVxDQIZd45q',1),(2,26,'manager@xyz','$2a$10$HTI8SIV7gwcBz5z1kaKHjeUnZr2mwME24BXjlu29QpmVxDQIZd45q',1),(3,27,'customer@xyz','$2a$10$HTI8SIV7gwcBz5z1kaKHjeUnZr2mwME24BXjlu29QpmVxDQIZd45q',1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -569,7 +689,7 @@ CREATE TABLE `variants` (
   CONSTRAINT `fk_color_id_variant_colors` FOREIGN KEY (`color_id`) REFERENCES `colors` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_size_id_variant_sizes` FOREIGN KEY (`size_id`) REFERENCES `sizes` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `variants_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -578,7 +698,36 @@ CREATE TABLE `variants` (
 
 LOCK TABLES `variants` WRITE;
 /*!40000 ALTER TABLE `variants` DISABLE KEYS */;
+INSERT INTO `variants` VALUES (1,2,'TPN-AD-01XL-GR',5,2,250000.00,280000.00,11,0),(2,2,'TPN-AD-02XL-RD',5,1,250000.00,280000.00,8,0),(3,3,'IP16PRM',NULL,6,31000000.00,35000000.00,4,0);
 /*!40000 ALTER TABLE `variants` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `voucher`
+--
+
+DROP TABLE IF EXISTS `voucher`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `voucher` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `code` varchar(45) NOT NULL,
+  `discount` decimal(5,2) NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `list_variant` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `voucher`
+--
+
+LOCK TABLES `voucher` WRITE;
+/*!40000 ALTER TABLE `voucher` DISABLE KEYS */;
+/*!40000 ALTER TABLE `voucher` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -590,4 +739,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-10-09 14:59:08
+-- Dump completed on 2024-10-25  9:30:50

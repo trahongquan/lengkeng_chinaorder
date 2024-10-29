@@ -20,7 +20,7 @@
             <div class="col-2">
                 <div>
                     <label for="category"> Danh mục</label>
-                    <select name="category" id="category"  class="form-control variant">
+                    <select name="category" id="category"  class="form-control variant" disabled>
                         <option th:each="category : ${categories}" th:value="${category.id}"
                         th:text="${category.catname}"></option>
                     </select>
@@ -79,7 +79,9 @@
                 onclick="return confirm('Bạn có chắc chắn muốn thực hiện thao tác này???')"> Thêm mới</button>
         <p class="text-warning mt-2 btn" id="warning">Chú ý: Click lại nút sửa một lần nữa để hủy chế độ sửa</p>
     </form>
-        <br>
+    <a class="btn btn-success my-2" th:href="'/Lengkeng/admin/products?username='+${#authentication.name}"> Đến Trang sản phẩm</a>
+
+    <br>
         <div class="main-card mb-3 card">
             <div class="card-body">
                 <table style="width: 100%;" id="example" class="table table-hover table-striped table-bordered">

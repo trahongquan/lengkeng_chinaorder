@@ -16,6 +16,7 @@ $(document).ready(function () {
 
         if($('#id').val()==variant_id){
             $('#id').val(0);
+            $('#variant_id').val(0);
             $('#category').prop('selectedIndex', 0);
             $('#product').prop('selectedIndex', 0);
             $('#sku').val("");
@@ -32,10 +33,14 @@ $(document).ready(function () {
                 $(this).removeClass('font-weight-bold')
             })
             $('#warning').hide()
+            $('#add_Image').hide()
+            if($('#addImage').show()) $('#addImage').hide()
+
         }
         else {
             // Populate the input and select fields with lesson information
             $('#id').val(variant[0].id);
+            $('#variant_id').val(variant[0].id);
             $('#category').val(variant[0].product.category.id);
             $('#product').val(variant[0].product.id);
             $('#sku').val(variant[0].sku);
@@ -57,11 +62,12 @@ $(document).ready(function () {
                 $(this).addClass('font-weight-bold')
             })
             $('#warning').show();
+            $('#add_Image').show()
         }
     })
 })
 
-/*******************  Disable size *********************/
+/******************* Popup Attribute *********************/
 
 $('#add_Attribute').click(function() {
     var form = $('#addAttributes');
@@ -71,6 +77,19 @@ $('#add_Attribute').click(function() {
     } else {
         form.hide();
         $(this).text('Thêm thuộc tính mới');
+    }
+});
+
+/*******************  Popup add image & button add image *********************/
+
+$('#add_Image').click(function() {
+    var divImage = $('#addImage');
+    if (divImage.is(':hidden')) {
+        divImage.show();
+        $(this).text('Ẩn thêm hình ảnh');
+    } else {
+        divImage.hide();
+        $(this).text('Thêm hình ảnh');
     }
 });
 

@@ -1,4 +1,4 @@
-.popup {
+.popup, .popup-image {
     display: none;
     position: fixed;
     top: 0;

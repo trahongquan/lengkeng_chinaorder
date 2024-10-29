@@ -31,4 +31,9 @@ public class Image {
 
     @Column(name = "imgurl")
     private String imgurl;
+
+    public Image(Variants variant, String imgurl) {
+        this.variant = variant;
+        this.imgurl = imgurl;
+    }
 }
