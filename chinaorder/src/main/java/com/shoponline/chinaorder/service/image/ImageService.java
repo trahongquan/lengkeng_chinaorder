@@ -13,4 +13,6 @@ public interface ImageService {
     Image findImageById(int id);
 
     void deleteImage(int id);
+
+    List<Image> findImagesByUrl(String imgUrl);
 }

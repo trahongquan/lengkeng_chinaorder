@@ -4,21 +4,22 @@ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
 spring.servlet.multipart.enabled=true
 spring.servlet.multipart.max-file-size=5MB
-spring.servlet.multipart.max-request-size=5MB
+spring.servlet.multipart.max-request-size=20MB
 spring.servlet.multipart.location=${user.dir}/src/main/resources/static/
+
 
 server.port=8080
 error.path=/error
 spring.data.jpa.repository.packages=com.shoponline.chinaorder.dao
 spring.data.jpa.entity.packages-to-scan=com.shoponline.chinaorder.entity
 
-
-security.datasource.jdbc-url= jdbc:mysql://mysql-container-chinaorder:3306/chinaorder
-app.datasource.jdbc-url= jdbc:mysql://mysql-container-chinaorder:3306/chinaorder
-security.datasource.username= root
-security.datasource.password= root
+app.datasource.jdbc-url= jdbc:mysql://localhost:3306/chinaorder
 app.datasource.username= root
-app.datasource.password= root
+app.datasource.password= 123456
+
+security.datasource.jdbc-url= jdbc:mysql://localhost:3306/chinaorder
+security.datasource.username= root
+security.datasource.password= 123456
 
 spring.jpa.hibernate.use-new-id-generator-mappings=false
 spring.jpa.properties.hibernate.id.new_generator_mappings=false
@@ -29,8 +30,10 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 #logging.level.org.hibernate=DEBUG
 #logging.level.org.springframework.orm.jpa=DEBUG
-spring.jpa.properties.hibernate.show_sql=false
-spring.jpa.properties.hibernate.generate_statistics=false
+#logging.level.org.hibernate.jpa.internal.util.LogHelper=ERROR
+
 spring.mvc.dispatch-options-request=true
 
 
+spring.jpa.properties.hibernate.show_sql=false
+spring.jpa.properties.hibernate.generate_statistics=false

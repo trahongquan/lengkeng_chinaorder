@@ -33,4 +33,9 @@ public class ImageServiceImpl implements ImageService {
     public void deleteImage(int id) {
         imageRepository.deleteById(id);
     }
+
+    @Override
+    public List<Image> findImagesByUrl(String imgUrl) {
+        return imageRepository.findAllByImgurlContains(imgUrl);
+    }
 }

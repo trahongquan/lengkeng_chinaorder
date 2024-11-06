@@ -1,12 +1,12 @@
-const fileTempl = document.getElementById("file-template"),
+var fileTempl = document.getElementById("file-template"),
     imageTempl = document.getElementById("image-template"),
     empty = document.getElementById("empty");
 
 function addFile(target, file) {
-    const isImage = file.type.match("image.*"),
+    var isImage = file.type.match("image.*"),
         objectURL = URL.createObjectURL(file);
 
-    const clone = isImage
+    var clone = isImage
         ? imageTempl.content.cloneNode(true)
         : fileTempl.content.cloneNode(true);
 
@@ -30,22 +30,22 @@ function addFile(target, file) {
     target.prepend(clone);
 }
 
-const gallery = document.getElementById("gallery"),
+var gallery = document.getElementById("gallery"),
     overlay = document.getElementById("overlay");
 
-const hidden = document.getElementById("hidden-input");
+var hidden = document.getElementById("hidden-input");
 document.getElementById("button").onclick = () => hidden.click();
 hidden.onchange = (e) => {
-    for (const file of e.target.files) {
+    for (var file of e.target.files) {
         addFile(gallery, file);
     }
 };
 
-let counter = 0;
+var counter = 0;
 
 function dropHandler(ev) {
     ev.preventDefault();
-    for (const file of ev.dataTransfer.files) {
+    for (var file of ev.dataTransfer.files) {
         addFile(gallery, file);
         overlay.classList.remove("draggedover");
         counter = 0;
@@ -67,7 +67,7 @@ function dragOverHandler(e) {
 
 gallery.onclick = ({ target }) => {
     if (target.classList.contains("delete")) {
-        const ou = target.dataset.target;
+        var ou = target.dataset.target;
         document.getElementById(ou).remove(ou);
         gallery.children.length === 1 && empty.classList.remove("hidden");
     }

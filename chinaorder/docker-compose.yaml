@@ -1,4 +1,4 @@
-version: 4.3'
+version: "4.3"
 
 services:
   mysql-container-chinaorder:
@@ -6,11 +6,12 @@ services:
     container_name: mysql-container-chinaorder
     restart: always
     ports:
-      - "3307:3306"
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: chinaorder
     volumes:
+      - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     expose:
       - 3306
@@ -26,8 +27,9 @@ services:
       - DB_PORT=3306
       - DB_HOST=mysql-container-chinaorder
     ports:
-      - "8081:8080"
-
+      - "8080:8080"
+volumes:
+  mysql_data:
   # docker-compose -p spring-mysql up -d
   # hoặc
   # docker-compose -p spring-mysql test up --build

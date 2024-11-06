@@ -1,5 +1,6 @@
 package com.shoponline.chinaorder.contrtoller.mainController;
 
+import com.shoponline.chinaorder.dto.ProductCategory;
 import com.shoponline.chinaorder.entity.*;
 import com.shoponline.chinaorder.service.attribute.AttributeService;
 import com.shoponline.chinaorder.service.attributevalue.attribute.AttributeValueService;
@@ -11,6 +12,8 @@ import com.shoponline.chinaorder.service.color.ColorService;
 import com.shoponline.chinaorder.service.commune.CommuneService;
 import com.shoponline.chinaorder.service.district.DistrictService;
 import com.shoponline.chinaorder.service.image.ImageService;
+import com.shoponline.chinaorder.service.imageBannerr.imageProduct.ImageBannerService;
+import com.shoponline.chinaorder.service.imageProduct.ImageProductService;
 import com.shoponline.chinaorder.service.logs.LogsService;
 import com.shoponline.chinaorder.service.orders.OrdersService;
 import com.shoponline.chinaorder.service.orderitem.OrderItemService;
@@ -25,8 +28,8 @@ import com.shoponline.chinaorder.service.unit.UnitService;
 import com.shoponline.chinaorder.service.users.UserService;
 import com.shoponline.chinaorder.service.variant.VariantService;
 import com.shoponline.chinaorder.service.voucher.VoucherService;
+import com.shoponline.chinaorder.support.PathEncoderDecoder;
 import com.shoponline.chinaorder.support.RoleSystem;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,14 +37,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.constraints.Min;
 import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/Lengkeng")
@@ -56,6 +60,8 @@ public class mainController {
     private final CommuneService communeService;
     private final DistrictService districtService;
     private final ImageService imageService;
+    private final ImageProductService imageProductService;
+    private final ImageBannerService imageBannerService;
     private final LogsService logsService;
     private final OrdersService ordersService;
     private final OrderItemService orderItemService;
@@ -73,7 +79,7 @@ public class mainController {
     private final VoucherService voucherService;
 
     @Autowired
-    public mainController(AuthorityService authorityService, UserService userService, BrandService brandService, CartService cartService, CategoryService categoryService, ColorService colorService, CommuneService communeService, DistrictService districtService, ImageService imageService, LogsService logsService, OrdersService ordersService, OrderItemService orderItemService, PeopleService peopleService, ProductService productService, ProvinceService provinceService, ReviewService reviewService, SizeService sizeService, AttributeService attributeService, AttributeValueService attributeValueService, StatusService statusService, SupplierService supplierService, UnitService unitService, VariantService variantService, VoucherService voucherService) {
+    public mainController(AuthorityService authorityService, UserService userService, BrandService brandService, CartService cartService, CategoryService categoryService, ColorService colorService, CommuneService communeService, DistrictService districtService, ImageService imageService, ImageProductService imageProductService, ImageBannerService imageBannerService, LogsService logsService, OrdersService ordersService, OrderItemService orderItemService, PeopleService peopleService, ProductService productService, ProvinceService provinceService, ReviewService reviewService, SizeService sizeService, AttributeService attributeService, AttributeValueService attributeValueService, StatusService statusService, SupplierService supplierService, UnitService unitService, VariantService variantService, VoucherService voucherService) {
         this.authorityService = authorityService;
         this.userService = userService;
         this.brandService = brandService;
@@ -83,6 +89,8 @@ public class mainController {
         this.communeService = communeService;
         this.districtService = districtService;
         this.imageService = imageService;
+        this.imageProductService = imageProductService;
+        this.imageBannerService = imageBannerService;
         this.logsService = logsService;
         this.ordersService = ordersService;
         this.orderItemService = orderItemService;
@@ -126,7 +134,7 @@ public class mainController {
     }
 
     @GetMapping({"/", ""})
-    public String Lengkeng(Principal principal, Authentication authentication){
+    public String Lengkeng(Principal principal, Authentication authentication, Model model){
         if(principal != null && authentication != null){
             String username = principal.getName();
             String authority = "";
@@ -135,6 +143,7 @@ public class mainController {
             }
             if((authority.equals(RoleSystem.ROLE_ADMIN) || authority.equals(RoleSystem.ROLE_MANAGER))) return Redirect("/admin/dashboard","");
         }
+        model.addAttribute("banners", imageBannerService.getAllImageBannersActive());
         return "visitors/index";
     }
     @GetMapping("/accouunt")
@@ -146,7 +155,38 @@ public class mainController {
         return "visitors/cart";
     }
     @GetMapping("/category")
-    public String category(){
+    public String category(Model model){
+        List<ImageProduct> imageProducts = imageProductService.getAllImageProducts();
+        Map<Integer, ImageProduct> uniqueImageProductMap = new HashMap<>();
+        for (ImageProduct imageProduct : imageProducts) {
+            uniqueImageProductMap.put(imageProduct.getProduct().getId(), imageProduct);
+        }
+        List<ProductCategory> productCategories = new ArrayList<>();
+        productService.getAllProducts().forEach(p->{
+            uniqueImageProductMap.values().forEach(im -> {
+                if(im.getProduct().equals(p)){
+                    List<Variants> variants = variantService.FindAllByProduct(p);
+                    if(!variants.isEmpty()) {
+                        Variants variant = variants.get(0);
+                        int v_quantity = variants.size();
+                        productCategories.add(new ProductCategory().builder()
+                                .product(p)
+                                .variant(variant)
+                                .variants(v_quantity)
+                                .imageProduct(im)
+                                .build());
+                    } else {
+                        productCategories.add(new ProductCategory().builder()
+                                .product(p)
+                                .variants(0)
+                                .imageProduct(im)
+                                .build());
+                    }
+                }
+            });
+        });
+
+        model.addAttribute("productCategories", productCategories);
         return "visitors/category";
     }
     @GetMapping("/product")
@@ -181,9 +221,9 @@ public class mainController {
         return template;
     }
 
-    /***************************************************/
-    /********************* Suports *********************/
-    /***************************************************/
+        /***************************************************/
+        /********************* Suports *********************/
+        /***************************************************/
 
 
     /********************* suppliers *********************/
@@ -661,6 +701,77 @@ public class mainController {
     }
 
     /***************************************************/
+    /**************** Chỉnh sửa Banner ****************/
+    /***************************************************/
+
+    @GetMapping("/admin/bannertop")
+    public String bannertop(Model model,
+                           @RequestParam(value = "success", defaultValue = "false") boolean success,
+                           @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
+        List<ImageBanner> imageBanners = imageBannerService.getAllImageBanners();
+
+        model.addAttribute("imageBanners", imageBanners);
+
+        model.addAttribute("content", "pages/support/bannertop");
+        model.addAttribute("title", "Quản lý Banner top trang chủ");
+
+        model.addAttribute("success", success);
+        model.addAttribute("unsuccess", unsuccess);
+        return template;
+    }
+
+    @PostMapping({"/admin/bannertop/add"})
+    public String bannertop_Add(Model model, Principal principal,
+                             @ModelAttribute ImageBanner imageBanner,
+                             @RequestParam("file") MultipartFile file) {
+        String UPLOAD_DIR_NEW = "images/banner";
+        String NEW_FOLDER = "banner-top";
+            try {
+                String filePath = UPLOAD_DIR_NEW + "/" + NEW_FOLDER + "/" + file.getOriginalFilename();
+                file.transferTo(new File(filePath));
+                imageBanner.setImgurl(filePath);
+                imageBanner.setType("banner-top");
+                imageBannerService.createImageBanner(new ImageBanner(imageBanner.getType(), imageBanner.getImgurl(), imageBanner.getTitle(), imageBanner.getSubtitle(), imageBanner.getButtonText(), imageBanner.getActive()));
+                System.out.println(imageBanner);
+                System.out.println(filePath);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                return Redirect("/admin/bannertop/?username=" + principal.getName(), false);
+            }
+        return Redirect("/admin/bannertop/?username=" + principal.getName(), true);
+    }
+
+    @GetMapping("/admin/bannertop/del/{id}")
+    public String bannertop_del(Model model, Principal principal,
+                                @PathVariable("id")  @Min(1) int id,
+                                @RequestParam(value = "success", defaultValue = "false") boolean success,
+                                @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
+        ImageBanner imageBanner = imageBannerService.findImageBannerById(id);
+        String filePath = imageBanner.getImgurl();
+        try {
+            File file = new File(UPLOAD_DIR + filePath);
+            System.out.println(UPLOAD_DIR + "/"+ filePath);
+            if (file.exists()) {
+                if (file.delete()) {
+                    System.out.println("File deleted successfully.");
+                    List<ImageBanner> imageBanners = imageBannerService.findImagesByUrl(filePath);
+                    imageBanners.forEach(i->imageBannerService.deleteImageBanner(i.getId()));
+                    return Redirect("/admin/bannertop/?username=" + principal.getName(), true); // Xóa thành công
+                } else {
+                    System.out.println("Failed to delete file.");
+                }
+            } else {
+                System.out.println("File not found.");
+            }
+        } catch (Exception e) {
+            // Bắt mọi ngoại lệ
+            e.printStackTrace(); // In thông tin lỗi ra console để debug
+            return Redirect("/admin/bannertop/?username=" + principal.getName(), false); // Xóa thất bại
+        }
+        return Redirect("/admin/bannertop/?username=" + principal.getName(), false); // Xóa thất bại
+    }
+
+    /***************************************************/
     /********************* Product *********************/
     /***************************************************/
 
@@ -670,6 +781,7 @@ public class mainController {
                            @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
         List<Products> products = productService.getAllProducts();
 
+        model.addAttribute("imageProducts", imageProductService.getAllImageProducts());
         model.addAttribute("products", products);
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("brands", brandService.getAllBrands());
@@ -706,6 +818,63 @@ public class mainController {
             return Redirect("/admin/products", false);
         }
     }
+    @PostMapping("/admin/products/uploadImage")
+    public String products_uploadFiles(@RequestParam("files") MultipartFile[] files,
+                                       @RequestParam("product_id") int product_id,
+                                       Principal principal) {
+        String UPLOAD_DIR_NEW = "images/products";
+        String NEW_FOLDER = product_id + "";
+        String productDir = UPLOAD_DIR + "/images/products/" + NEW_FOLDER;
+        File productDirFile = new File(productDir);
+        if (!productDirFile.exists()) productDirFile.mkdirs();
+
+        for (MultipartFile file : files) {
+            if (file.isEmpty()) continue;
+            try {
+                String filePath = UPLOAD_DIR_NEW + "/" + NEW_FOLDER + "/" + file.getOriginalFilename();
+                file.transferTo(new File(filePath));
+                Products product = productService.findProductById(product_id);
+                imageProductService.createImageProduct(new ImageProduct(product, filePath));
+                System.out.println(filePath);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                return Redirect("/admin/products/?username=" + principal.getName(), false);
+            }
+        }
+        return Redirect("/admin/products/?username=" + principal.getName(), true);
+    }
+    @GetMapping("/admin/products/delImage")
+    public String products_delImage(Model model, Principal principal,
+                                    @RequestParam("product_id") int id,
+                                    @RequestParam("url") String imgUrl,
+                                    @RequestParam(value = "success", defaultValue = "false") boolean success,
+                                    @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
+        String originalImgUrl = PathEncoderDecoder.decodePath(imgUrl);
+        int startIndex = originalImgUrl.indexOf("products") + "products".length();
+        String resultFile = originalImgUrl.substring(startIndex);
+        String filePath = UPLOAD_DIR + "/images/products/"+ resultFile;
+        try {
+            File file = new File(filePath);
+            if (file.exists()) {
+                if (file.delete()) {
+                    System.out.println("File deleted successfully.");
+                    List<ImageProduct> imageProducts = imageProductService.findImagesByUrl(originalImgUrl);
+                    imageProducts.forEach(i->imageProductService.deleteImageProduct(i.getId()));
+                    return Redirect("/admin/products/?username=" + principal.getName(), true); // Xóa thành công
+                } else {
+                    System.out.println("Failed to delete file.");
+                }
+            } else {
+                System.out.println("File not found.");
+            }
+        } catch (Exception e) {
+            // Bắt mọi ngoại lệ
+            e.printStackTrace(); // In thông tin lỗi ra console để debug
+            return Redirect("/admin/products/?username=" + principal.getName(), false); // Xóa thất bại
+        }
+        return Redirect("/admin/products/detail/" + id, false);
+    }
+
 
     @GetMapping("/admin/products/detail/{id}")
     public String product_detail(Model model,
@@ -759,14 +928,14 @@ public class mainController {
             return Redirect("/admin/products/detail/"+product_id, false);
         }
     }
-    String UPLOAD_DIR = "src/main/resources/static/images/products";
+    String UPLOAD_DIR = "src/main/resources/static";
     @PostMapping("/admin/products/detail/uploadImage")
     public String uploadFiles(@RequestParam("files") MultipartFile[] files,
                               @RequestParam("product_id") int product_id,
                               @RequestParam("variant_id") int variant_id) {
         String UPLOAD_DIR_NEW = "images/products";
         String NEW_FOLDER = product_id + "/" + variant_id;
-        String productDir = UPLOAD_DIR + "/" + NEW_FOLDER;
+        String productDir = UPLOAD_DIR + "/images/products/" + NEW_FOLDER;
         File productDirFile = new File(productDir);
         if (!productDirFile.exists()) {
             productDirFile.mkdirs();
@@ -785,26 +954,41 @@ public class mainController {
         }
         return Redirect("/admin/products/detail/" + product_id, true);
     }
-//    @PostMapping("/admin/products/detail/uploadImage")
-//    public String uploadFiles(@RequestParam("files") MultipartFile[] files, @RequestParam("product_id") int product_id) {
-//        StringBuilder message = new StringBuilder();
-//        System.out.println("files.length = " + files.length);
-//        System.out.println(files);
-//        for (MultipartFile file : files) {
-//            if (file.isEmpty()) continue;
-//            try {
-//                String filePath = UPLOAD_DIR + file.getOriginalFilename();
-//                System.out.println(filePath);
-//                file.transferTo(new File(filePath));
-//                message.append("Uploaded: ").append(file.getOriginalFilename()).append("<br/>");
-//            } catch (IOException e) {
-//                message.append("Failed to upload: ").append(file.getOriginalFilename()).append("<br/>");
-//                return Redirect("/admin/products/detail/"+product_id, false);
-//            }
-//        }
-//        return Redirect("/admin/products/detail/"+product_id, true);
-//    }
-
+    @GetMapping("/admin/products/detail/delImage")
+    public String delImage(Model model,
+                           @RequestParam("product_id") int id,
+                           @RequestParam("url") String imgUrl,
+                           @RequestParam(value = "success", defaultValue = "false") boolean success,
+                           @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
+        String originalImgUrl = PathEncoderDecoder.decodePath(imgUrl);
+        System.out.println(originalImgUrl);
+        int startIndex = originalImgUrl.indexOf("products") + "products".length();
+        String resultFile = originalImgUrl.substring(startIndex);
+        String filePath = UPLOAD_DIR + "/images/products/" +resultFile;
+        /** thêm phần System.currentTimeMillis()
+         * Bằng cách thêm một tham số thời gian vào cuối đường dẫn hình ảnh,
+         * mỗi lần tải lại trang, đường dẫn sẽ khác đi và buộc trình duyệt phải tải lại hình ảnh từ server.*/
+        try {
+            File file = new File(filePath);
+            if (file.exists()) {
+                if (file.delete()) {
+                    System.out.println("File deleted successfully.");
+                    List<Image> images = imageService.findImagesByUrl(originalImgUrl);
+                    images.forEach(i->imageService.deleteImage(i.getId()));
+                    return Redirect("/admin/products/detail/" + id, true); // Xóa thành công
+                } else {
+                    System.out.println("Failed to delete file.");
+                }
+            } else {
+                System.out.println("File not found.");
+            }
+        } catch (Exception e) {
+            // Bắt mọi ngoại lệ
+            e.printStackTrace(); // In thông tin lỗi ra console để debug
+            return Redirect("/admin/products/detail/" + id, false); // Xóa thất bại
+        }
+        return Redirect("/admin/products/detail/" + id, false);
+    }
 
     /***************************************************/
     /********************* Variants *********************/
@@ -840,4 +1024,12 @@ public class mainController {
             return Redirect("/admin/variants", false);
         }
     }
+
+
+    /***************************************************/
+    /********************* xxxxxxx *********************/
+    /***************************************************/
+
+
+
 }

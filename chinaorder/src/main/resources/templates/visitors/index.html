@@ -85,89 +85,32 @@
                 }
               }'>
               <div class="swiper-wrapper">
-            
+
                 <!-- Slide-->
-                <div class="swiper-slide position-relative h-100 w-100">
-                  <div class="w-100 h-100 overflow-hidden position-absolute z-index-1 top-0 start-0 end-0 bottom-0">
-                    <div class="w-100 h-100 bg-img-cover bg-pos-center-center overflow-hidden" data-swiper-parallax="-100"
-                      style=" will-change: transform; background-image: url(/assets/images/banners/banner-1.jpg)">
-                    </div>
+                  <div th:each="banner, bannerStat : ${banners}" class="swiper-slide position-relative h-100 w-100">
+                      <div class="w-100 h-100 overflow-hidden position-absolute z-index-1 top-0 start-0 end-0 bottom-0">
+                          <div class="w-100 h-100 bg-img-cover bg-pos-center-center overflow-hidden" data-swiper-parallax="-100"
+                               th:style="'will-change: transform; background-image: url(' + ${banner.imgurl} + ')'">
+                          </div>
+                      </div>
+                      <div class="container position-relative z-index-10 d-flex h-100 align-items-start flex-column justify-content-center">
+                          <p class="title-small text-white opacity-75 mb-0" data-swiper-parallax="-100" th:text="${banner.title}"></p>
+                          <h2 class="display-3 tracking-wide fw-bold text-uppercase tracking-wide text-white" data-swiper-parallax="100">
+                              <span th:text="${banner.subtitle}"></span>
+                          </h2>
+                          <div data-swiper-parallax-y="-25">
+                              <a th:href="@{/Lengkeng/category}" class="btn btn-psuedo text-white" role="button" th:text="${banner.buttonText}"></a>
+                          </div>
+                      </div>
                   </div>
-                  <div
-                    class="container position-relative z-index-10 d-flex h-100 align-items-start flex-column justify-content-center">
-                    <p class="title-small text-white opacity-75 mb-0" data-swiper-parallax="-100">Everything You Need</p>
-                    <h2 class="display-3 tracking-wide fw-bold text-uppercase tracking-wide text-white" data-swiper-parallax="100">
-                      <span class="text-outline-light">Summer</span> Essentials</h2>
-                    <div data-swiper-parallax-y="-25">
-                      <a href="/Lengkeng/category" class="btn btn-psuedo text-white" role="button">Shop New Arrivals</a>
-                    </div>
-                  </div>
-                </div>
                 <!-- /Slide-->
-            
-                <!-- Slide-->
-                <div class="swiper-slide position-relative h-100 w-100">
-                  <div class="w-100 h-100 overflow-hidden position-absolute z-index-1 top-0 start-0 end-0 bottom-0">
-                    <div class="w-100 h-100 bg-img-cover bg-pos-center-center overflow-hidden" data-swiper-parallax="-100"
-                      style=" will-change: transform; background-image: url(/assets/images/banners/banner-2.jpg)">
-                    </div>
-                  </div>
-                  <div
-                    class="container position-relative z-index-10 d-flex h-100 align-items-start flex-column justify-content-center">
-                    <p class="title-small text-white opacity-75 mb-0" data-swiper-parallax="-100">Spring Collection</p>
-                    <h2 class="display-3 tracking-wide fw-bold text-uppercase tracking-wide text-white" data-swiper-parallax="100">
-                      Adidas <span class="text-outline-light">SS21</span></h2>
-                    <div data-swiper-parallax-y="-25">
-                      <a href="/Lengkeng/category" class="btn btn-psuedo text-white" role="button">Shop Latest Adidas</a>
-                    </div>
-                  </div>
-                </div>
-                <!--/Slide-->
-            
-                <!-- Slide-->
-                <div class="swiper-slide position-relative h-100 w-100">
-                  <div class="w-100 h-100 overflow-hidden position-absolute z-index-1 top-0 start-0 end-0 bottom-0">
-                    <div class="w-100 h-100 bg-img-cover bg-pos-center-center overflow-hidden" data-swiper-parallax="-100"
-                      style=" will-change: transform; background-image: url(/assets/images/banners/banner-4.jpg)">
-                    </div>
-                  </div>
-                  <div
-                    class="container position-relative z-index-10 d-flex h-100 align-items-start flex-column justify-content-center">
-                    <p class="title-small text-white opacity-75 mb-0" data-swiper-parallax="-100">Just Do it</p>
-                    <h2 class="display-3 tracking-wide fw-bold text-uppercase tracking-wide text-white" data-swiper-parallax="100">
-                      Nike <span class="text-outline-light">SS21</span></h2>
-                    <div data-swiper-parallax-y="-25">
-                      <a href="/Lengkeng/category" class="btn btn-psuedo text-white" role="button">Shop Latest Nike</a>
-                    </div>
-                  </div>
-                </div>
-                <!-- /Slide-->
-            
-                <!--Slide-->
-                <div class="swiper-slide position-relative h-100 w-100">
-                  <div class="w-100 h-100 overflow-hidden position-absolute z-index-1 top-0 start-0 end-0 bottom-0">
-                    <div class="w-100 h-100 bg-img-cover bg-pos-center-center overflow-hidden" data-swiper-parallax="-100"
-                      style=" will-change: transform; background-image: url(/assets/images/banners/banner-3.jpg)">
-                    </div>
-                  </div>
-                  <div
-                    class="container position-relative z-index-10 d-flex h-100 align-items-start flex-column justify-content-center">
-                    <p class="title-small text-white opacity-75 mb-0" data-swiper-parallax="-100">Look Good Feel Good</p>
-                    <h2 class="display-3 tracking-wide fw-bold text-uppercase tracking-wide text-white" data-swiper-parallax="100">
-                      <span class="text-outline-light">Sustainable</span> Fashion</h2>
-                    <div data-swiper-parallax-y="-25">
-                      <a href="/Lengkeng/category" class="btn btn-psuedo text-white" role="button">Why We Are Different</a>
-                    </div>
-                  </div>
-                </div>
-                <!--/Slide-->
-            
               </div>
-            
+
               <div class="swiper-pagination swiper-pagination-bullet-light"></div>
-            
+
             </div>
-            <!-- / Swiper Info-->        </section>
+            <!-- / Swiper Info-->
+        </section>
         <!--/ Top Banner-->
 
         <!-- Featured Brands-->
@@ -440,7 +383,8 @@
                       <path d="M0.822,1 H0.016 a0.015,0.015,0,0,1,-0.016,-0.015 L0.158,0.015 A0.016,0.015,0,0,1,0.173,0 L0.984,0 a0.016,0.015,0,0,1,0.016,0.015 L0.837,0.985 A0.016,0.015,0,0,1,0.822,1"></path>
                   </clipPath>
                   </defs>
-                </svg>            </div>
+                </svg>
+            </div>
             <!-- /Featured Categories-->
 
             <!-- Homepage Intro-->

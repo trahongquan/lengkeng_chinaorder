@@ -89,6 +89,21 @@
                     </li>
                 </ul>
             </li>
+            <li>
+                <a href="#">
+                    <i class="metismenu-icon pe-7s-timer">
+                    </i>Chỉnh sửa Banner
+                    <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                </a>
+                <ul>
+                    <li sec:authorize="hasRole('ROLE_ADMIN')">
+                        <a th:href="'/Lengkeng/admin/bannertop?username='+${#authentication.name}">
+                            <i class="metismenu-icon pe-7s-server">
+                            </i>Banner-Top
+                        </a>
+                    </li>
+                </ul>
+            </li>
         </ul>
     </div>
 </div>

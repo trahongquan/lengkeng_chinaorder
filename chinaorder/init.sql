@@ -299,13 +299,13 @@ DROP TABLE IF EXISTS `image`;
 CREATE TABLE `image` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `variant_id` int(11) NOT NULL,
-  `type` varchar(45) NOT NULL,
+  `type` varchar(45) DEFAULT NULL,
   `imgname` text,
   `imgurl` text,
   PRIMARY KEY (`id`),
   KEY `fk_variant_id_image_variant_idx` (`variant_id`),
   CONSTRAINT `fk_variant_id_image_variant` FOREIGN KEY (`variant_id`) REFERENCES `variants` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -314,7 +314,64 @@ CREATE TABLE `image` (
 
 LOCK TABLES `image` WRITE;
 /*!40000 ALTER TABLE `image` DISABLE KEYS */;
+INSERT INTO `image` VALUES (1,1,NULL,NULL,'images/products/2/1/N.jpg'),(2,1,NULL,NULL,'images/products/2/1/server.png'),(3,1,NULL,NULL,'images/products/2/1/testccc.jpg'),(4,1,NULL,NULL,'images/products/2/1/xxxx.jpg'),(11,3,NULL,NULL,'images/products/3/3/Logo.jpg'),(12,1,NULL,NULL,'images/products/2/1/1248279.jpg');
 /*!40000 ALTER TABLE `image` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `imagebanner`
+--
+
+DROP TABLE IF EXISTS `imagebanner`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `imagebanner` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(45) NOT NULL,
+  `imgurl` text NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `subtitle` varchar(255) DEFAULT NULL,
+  `buttonText` varchar(255) DEFAULT NULL,
+  `active` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `imagebanner`
+--
+
+LOCK TABLES `imagebanner` WRITE;
+/*!40000 ALTER TABLE `imagebanner` DISABLE KEYS */;
+INSERT INTO `imagebanner` VALUES (1,'banner-top','images/banner/banner-top/banner-1.jpg','Spring Collection','Adidas SS21','Shop Latest Adidas',1),(2,'banner-top','images/banner/banner-top/banner-2.jpg','Just Do it','Nike SS21','Shop Latest Nike',0),(3,'banner-top','images/banner/banner-top/banner-3.jpg','Look Good Feel Good','Sustainable Fashion','Why We Are Different',1),(4,'banner-top','images/banner/banner-top/banner-4.jpg','Spring Collection','Adidas SS21','Shop Latest Adidas',0),(5,'banner-top','images/banner/banner-top/banner-5.jpg','Just Do it','Nike SS21','Shop Latest Nike',1),(6,'banner-top','images/banner/banner-top/banner-6.jpg','Look Good Feel Good','Sustainable Fashion','Why We Are Different',0),(7,'banner-top','images/banner/banner-top/banner-7.jpg','Spring Collection','Adidas SS21','Shop Latest Adidas',1),(8,'banner-top','images/banner/banner-top/PXL_20230820_025535281.jpg','xxx','xxx','xxx',1);
+/*!40000 ALTER TABLE `imagebanner` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `imageproduct`
+--
+
+DROP TABLE IF EXISTS `imageproduct`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `imageproduct` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `productid` int(11) NOT NULL,
+  `imgurl` text,
+  PRIMARY KEY (`id`),
+  KEY `fk_productid_iamgeproduct_product_idx` (`productid`),
+  CONSTRAINT `fk_productid_iamgeproduct_product` FOREIGN KEY (`productid`) REFERENCES `products` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `imageproduct`
+--
+
+LOCK TABLES `imageproduct` WRITE;
+/*!40000 ALTER TABLE `imageproduct` DISABLE KEYS */;
+INSERT INTO `imageproduct` VALUES (3,3,'images/products/3/IP16PRM-gold.jpg'),(5,1,'images/products/1/AO DAI CACH TAN NAM RONG VANG (3).jpg'),(6,2,'images/products/2/wmQsZhsEwoh0cKD2wdT6BdeVe9a7CTNpSC31uQ4L.jpg'),(7,4,'images/products/4/abcd5499_copy_b09eb216f4554b00a8ad279de5b19e78_f501bba04e334364816166b9463afe7d_master.jpg'),(8,5,'images/products/5/dong-ho-trang-tri-13-500x500.jpg'),(9,6,'images/products/6/ổ cắm điện hình lỗ mũi.jpg'),(10,7,'images/products/7/hộp quẹt hình chó.jpg');
+/*!40000 ALTER TABLE `imageproduct` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -355,7 +412,7 @@ CREATE TABLE `order` (
   `status_id` int(11) NOT NULL,
   `creation_date` date NOT NULL,
   `approval_date` date NOT NULL,
-  `total_amount` decimal(30,2) NOT NULL,
+  `total_amount` decimal(30,0) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_customer_id_order_people_idx` (`custormer_id`),
   KEY `fk_employee_id_order_people_idx` (`employee_id`),
@@ -387,12 +444,12 @@ CREATE TABLE `order_item` (
   `order_id` int(11) DEFAULT NULL,
   `variant_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
-  `cost_price` decimal(30,2) NOT NULL,
-  `selling_price` decimal(30,2) NOT NULL,
+  `cost_price` decimal(30,0) NOT NULL,
+  `selling_price` decimal(30,0) NOT NULL,
   `voucher_id` int(11) NOT NULL,
-  `discounted_price` decimal(30,2) NOT NULL,
+  `discounted_price` decimal(30,0) NOT NULL,
   `quantity` int(11) NOT NULL,
-  `amount` decimal(30,2) NOT NULL,
+  `amount` decimal(30,0) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_variant_id_order_item_variant_idx` (`variant_id`),
   KEY `fk_product_id_order_item_variant_idx` (`product_id`),
@@ -467,7 +524,7 @@ CREATE TABLE `products` (
   CONSTRAINT `fk_product_cat` FOREIGN KEY (`product_cat_id`) REFERENCES `categories` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_product_supplier` FOREIGN KEY (`product_supplier_id`) REFERENCES `supplier` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_unit_id_product_unit` FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -476,7 +533,7 @@ CREATE TABLE `products` (
 
 LOCK TABLES `products` WRITE;
 /*!40000 ALTER TABLE `products` DISABLE KEYS */;
-INSERT INTO `products` VALUES (1,'Áo dài cách tân',2,1,2,1,'Áo dài ngày lễ tết hoặc cưới hỏi',0),(2,'Áo dài cách tân nữ',1,1,2,1,'Áo dài ngày lễ tết hoặc cưới hỏi',0),(3,'Iphone 16 pro max',7,4,1,1,'Điện thoại cao cấp của Apple năm 2024',0);
+INSERT INTO `products` VALUES (1,'Áo dài cách tân nam',2,1,2,1,'Áo dài ngày lễ tết hoặc cưới hỏi',0),(2,'Áo dài cách tân nữ',1,1,2,1,'Áo dài ngày lễ tết hoặc cưới hỏi',0),(3,'Iphone 16 pro max',7,4,1,1,'Điện thoại cao cấp của Apple năm 2024',0),(4,'Áo T-shirt ',3,3,1,1,'Áo mặc mùa hè',0),(5,'Đồng hồ trang trí',4,3,4,2,'Thiết kế nhã nhặn, đẹp mắt',0),(6,'Ổ cắm điện hình lỗ mũi',6,3,1,2,'Đồ trong nhà thú vị',0),(7,'Hộp quẹt diêm hình con chó',6,3,1,2,'Hộp quẹt để bàn hình con chó thú vị',0);
 /*!40000 ALTER TABLE `products` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -573,7 +630,7 @@ CREATE TABLE `status` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `statusname` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -582,6 +639,7 @@ CREATE TABLE `status` (
 
 LOCK TABLES `status` WRITE;
 /*!40000 ALTER TABLE `status` DISABLE KEYS */;
+INSERT INTO `status` VALUES (1,'Đặt hàng thành công'),(2,'Chờ duyệt đơn'),(3,'Đã duyệt đơn thành công'),(4,'Chờ hàng order'),(5,'Đang vận chuyển'),(6,'Hoàn thành đơn hàng'),(7,'Hoàn trả hàng'),(8,'Chờ thanhh toán'),(9,'Đã thanh toán');
 /*!40000 ALTER TABLE `status` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -678,8 +736,8 @@ CREATE TABLE `variants` (
   `sku` varchar(50) NOT NULL,
   `size_id` int(11) DEFAULT NULL,
   `color_id` int(11) DEFAULT NULL,
-  `cost_price` decimal(30,2) DEFAULT NULL,
-  `selling_price` decimal(30,2) DEFAULT NULL,
+  `cost_price` decimal(30,0) DEFAULT NULL,
+  `selling_price` decimal(30,0) DEFAULT NULL,
   `stock_quantity` int(11) DEFAULT NULL,
   `is_delete` tinyint(2) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -698,7 +756,7 @@ CREATE TABLE `variants` (
 
 LOCK TABLES `variants` WRITE;
 /*!40000 ALTER TABLE `variants` DISABLE KEYS */;
-INSERT INTO `variants` VALUES (1,2,'TPN-AD-01XL-GR',5,2,250000.00,280000.00,11,0),(2,2,'TPN-AD-02XL-RD',5,1,250000.00,280000.00,8,0),(3,3,'IP16PRM',NULL,6,31000000.00,35000000.00,4,0);
+INSERT INTO `variants` VALUES (1,2,'TPN-AD-01XL-GR',5,2,250000,280000,11,0),(2,2,'TPN-AD-02XL-RD',5,1,250000,280000,8,0),(3,3,'IP16PRM',NULL,6,31000000,35000000,4,0);
 /*!40000 ALTER TABLE `variants` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -739,4 +797,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-10-25  9:30:50
+-- Dump completed on 2024-11-05 15:30:41
