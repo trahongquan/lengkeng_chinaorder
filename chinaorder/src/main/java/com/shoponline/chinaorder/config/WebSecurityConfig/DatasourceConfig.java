@@ -1,4 +1,4 @@
-package com.shoponline.chinaorder.WebSecurityConfig;
+package com.shoponline.chinaorder.config.WebSecurityConfig;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
