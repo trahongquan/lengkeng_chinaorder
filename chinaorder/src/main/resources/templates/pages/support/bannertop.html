@@ -25,19 +25,19 @@
                 <input type="hidden" name="id" id="id" th:value="0">
                 <div class="col-3">
                     <label for="title" >Tiêu đề:</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="VD: Winter collection" required>
+                    <input type="text" class="form-control imageBanner" id="title" name="title" placeholder="VD: Winter collection" required>
                 </div>
                 <div class="col-3">
                     <label for="subtitle" >Tiêu đề 2:</label>
-                    <input type="text" class="form-control" id="subtitle" name="subtitle" placeholder="VD: UNIQ SS24" required>
+                    <input type="text" class="form-control imageBanner" id="subtitle" name="subtitle" placeholder="VD: UNIQ SS24" required>
                 </div>
                 <div class="col-3">
                     <label for="buttonText" >Nút bấm chữ:</label>
-                    <input type="text" class="form-control" id="buttonText" name="buttonText" placeholder="VD: Go to shopping" required>
+                    <input type="text" class="form-control imageBanner" id="buttonText" name="buttonText" placeholder="VD: Go to shopping" required>
                 </div>
                 <div class="col-3">
                     <label for="active" >Trạng thái:</label>
-                    <select name="active" id="active" class="form-control">
+                    <select name="active" id="active" class="form-control imageBanner">
                         <option value="1">Sử dụng</option>
                         <option value="0">Không sử dụng</option>
                     </select>
@@ -127,7 +127,10 @@
                     </li>
                 </template>
             </div>
-            <button type="submit" id="btnSubmit" class="btn btn-primary mt-2"> Thêm mới</button>
+            <div class="row justify-content-around">
+                <button type="submit" id="btnSubmit" class="col-3 btn btn-primary mt-2"> Thêm mới</button>
+                <button type="button" id="cancel" class="col-3 mx-3">Hủy</button>
+            </div>
             <p class="text-warning mt-2 btn" id="warning">Chú ý: Click lại nút sửa một lần nữa để hủy chế độ sửa</p>
         </form>
     <br>
@@ -158,10 +161,11 @@
                         <span th:if="${imageBanner.active == 1}"> ✅</span>
                     </td>
                     <td class="align-middle">
-                        <img th:src="${'/' + imageBanner.imgurl}" alt="banner" class="img-fluid">
+                        <img th:src="${domain + imageBanner.imgurl}" alt="banner" class="img-fluid">
                     </td>
                     <td class="d-flex flex-row justify-content-center align-content-center">
                         <button type="button" class="form-control btn btn-primary btn-edit m-1"
+                                th:data-id="${imageBanner.id}"
                         >Sửa</button>
                         <a type="button" class="form-control btn btn-danger m-1" th:href="'/Lengkeng/admin/bannertop/del/'+${imageBanner.id}"
                         >Xóa</a>
@@ -192,39 +196,45 @@
 
     <!--<script src="/js/popup.js"></script>-->
     <script th:inline="javascript">
-        var inputs = $('.supplier');
+        var inputs = $('.imageBanner');
         $(document).ready(function () {
-            var suppliers = [[${suppliers}]];
+            var imageBanners = [[${imageBanners}]];
             $('#warning').hide();
             $('.btn-edit').click(function() {
-                var supplier_id = $(this).attr('data-id');
-                var supplier = $.grep(suppliers, function(supplier1) {
-                    return supplier1.id == supplier_id;
+                var imageBanner_id = $(this).attr('data-id');
+                var imageBanner = $.grep(imageBanners, function(imageBanner1) {
+                    return imageBanner1.id == imageBanner_id;
                 });
-                console.log(supplier[0]);
+                console.log(imageBanner[0]);
 
 
-                if($('#id').val()==supplier_id){
+                if($('#id').val()==imageBanner_id){
                     $('#id').val(0);
-                    $('#name').val("");
-                    $('#address').val("");
-                    $('#contact').val("");
+                    $('#title').val("");
+                    $('#subtitle').val("");
+                    $('#buttonText').val("");
+                    $('#active').prop('selectedIndex', 0);
                     $('#btnSubmit').text('Thêm mới');
                     inputs.each(function() {
                         $(this).removeClass('font-weight-bold')
                     })
                     $('#warning').hide()
+                    $('#addImage').show()
+                    $('#cancel').show()
                 } else {
                     // Populate the input and select fields with lesson information
-                    $('#id').val(supplier[0].id);
-                    $('#name').val(supplier[0].suppliername);
-                    $('#address').val(supplier[0].address);
-                    $('#contact').val(supplier[0].contact);
+                    $('#id').val(imageBanner[0].id);
+                    $('#title').val(imageBanner[0].title);
+                    $('#subtitle').val(imageBanner[0].subtitle);
+                    $('#buttonText').val(imageBanner[0].buttonText);
+                    $('#active').val(imageBanner[0].active);
                     $('#btnSubmit').text('Sửa');
                     inputs.each(function() {
                         $(this).addClass('font-weight-bold')
                     })
                     $('#warning').show();
+                    $('#addImage').hide()
+                    $('#cancel').hide()
                 }
 
             })

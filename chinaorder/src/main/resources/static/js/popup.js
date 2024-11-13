@@ -55,7 +55,7 @@ $(document).ready(function() {
             } else {
                 image_for_variant.forEach(image => {
                     var img = $('<img>')
-                        .attr('src', '/' + image.imgurl)
+                        .attr('src', 'http://localhost:9000/leng-keng/' + image.imgurl)
                         .attr('data-product-id', product_id)
                         .addClass('product-image')
                         .css({

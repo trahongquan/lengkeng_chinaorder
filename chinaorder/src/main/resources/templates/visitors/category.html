@@ -29,7 +29,8 @@
 
   <!-- Main CSS -->
   <link rel="stylesheet" href="/assets/css/theme.bundle.css" />
-
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
   <!-- Fix for custom scrollbar if JS is disabled-->
   <noscript>
     <style>
@@ -44,7 +45,20 @@
 
   <!-- Page Title -->
   <title>OldSkool | Bootstrap 5 HTML Template</title>
-
+    <style>
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .gallery img {
+            margin: 10px;
+            max-width: max-content;
+            max-height: max-content;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            object-fit: cover;
+        }
+    </style>
 </head>
 <body class="">
 
@@ -105,43 +119,49 @@
                 </div>            <!-- /Category Toolbar-->
 
             <!-- Products-->
-            <div class="row g-4">
-                <th:block th:each="product : ${productCategories}">
-                    <div class="col-12 col-sm-6 col-lg-4">
-                        <!-- Card Product-->
-                        <div class="card border border-transparent position-relative overflow-hidden h-100 transparent">
-                            <div class="card-img position-relative">
-                                <div class="card-badges">
-                                    <span class="badge badge-card"><span class="f-w-2 f-h-2 bg-success rounded-circle d-block me-1"></span> New In</span>
+            <div class="row g-4 gallery">
+                <th:block th:each="productCategories : ${allGroupedCategories}">
+                    <h3 th:text="${productCategories[0].product.category.catname}"></h3>
+                    <th:block th:each="product : ${productCategories}">
+                            <div class="col-12 col-sm-4 col-lg-2">
+                                <!-- Card Product-->
+                                <div class="card border border-transparent position-relative overflow-hidden h-100 transparent">
+                                    <div class="card-img position-relative">
+                                        <div class="card-badges">
+                                            <span class="badge badge-card"><span class="f-w-2 f-h-2 bg-success rounded-circle d-block me-1"></span> New In</span>
+                                        </div>
+                                        <span class="position-absolute top-0 end-0 p-2 z-index-20 text-muted"><i class="ri-heart-line"></i></span>
+                                        <picture class="position-relative overflow-hidden d-block bg-light">
+                                            <img class="w-100 img-fluid position-relative z-index-10" title="" th:src="${domain + product.imageProduct.imgurl}" alt="">
+                                        </picture>
+                                        <div class="position-absolute start-0 bottom-0 end-0 z-index-20 p-2">
+                                            <button class="btn btn-quick-add"><i class="ri-add-line me-2"></i> Quick Add</button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body px-0">
+                                        <a class="text-decoration-none link-cover" href="/Lengkeng/product" th:text="${product.product.productName}"></a>
+                                        <small class="text-muted d-block" th:if="${product.variants!=0}" th:text="${product.variants + ' lựa chọn'}"></small>
+                                        <!--<p class="mt-2 mb-0 small" th:if="${product.variant != null}" th:text="${product.variant.sellingPrice}"></p>-->
+                                        <!--<p class="mt-2 mb-0 small" th:if="${product.variant != null}" th:text="${#numbers.formatCurrency(product.variant.sellingPrice)}"></p>-->
+                                        <p class="mt-2 mb-0 small formatCurrency" th:if="${product.variant != null}" th:data="${product.variant.sellingPrice}" ></p>
+                                    </div>
                                 </div>
-                                <span class="position-absolute top-0 end-0 p-2 z-index-20 text-muted"><i class="ri-heart-line"></i></span>
-                                <picture class="position-relative overflow-hidden d-block bg-light">
-                                    <img class="w-100 img-fluid position-relative z-index-10" title="" th:src="${'/'+ product.imageProduct.imgurl}" alt="">
-                                </picture>
-                                <div class="position-absolute start-0 bottom-0 end-0 z-index-20 p-2">
-                                    <button class="btn btn-quick-add"><i class="ri-add-line me-2"></i> Quick Add</button>
-                                </div>
+                                <!--/ Card Product-->
                             </div>
-                            <div class="card-body px-0">
-                                <a class="text-decoration-none link-cover" href="/Lengkeng/product" th:text="${product.product.productName}"></a>
-                                <small class="text-muted d-block" th:text="${product.variants + ' lựa chọn'}"></small>
-                                <!--<p class="mt-2 mb-0 small" th:if="${product.variant != null}" th:text="${product.variant.sellingPrice}"></p>-->
-                                <p class="mt-2 mb-0 small" th:if="${product.variant != null}" th:text="${#numbers.formatCurrency(product.variant.sellingPrice)}"></p>
-
-                                <script th:inline="javascript">
-                                    function formatCurrency(amount) {
-                                        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
-                                    }
-                                </script>
-                            </div>
-                        </div>
-                        <!--/ Card Product-->
-                    </div>
+                        </th:block>
                 </th:block>
 
             </div>
             <!-- / Products-->
-
+            <script>
+                $(document).ready(function() {
+                    $('.formatCurrency').each(function() {
+                        var sellingPrice = $(this).attr('data');
+                        var formattedPrice = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(sellingPrice);
+                        $(this).text(formattedPrice);
+                    });
+                });
+            </script>
             <!-- Pagination-->
             <div class="d-flex flex-column f-w-44 mx-auto my-5 text-center">
                 <small class="text-muted">Showing 9 of 121 products</small>
