@@ -28,8 +28,25 @@ services:
       - DB_HOST=mysql-container-chinaorder
     ports:
       - "8080:8080"
+
+  minio-container:
+    image: minio/minio
+    container_name: minio-container
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+      MINIO_REGION: ap-southeast-1
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+
 volumes:
   mysql_data:
+  minio_data:
+
   # docker-compose -p spring-mysql up -d
   # hoặc
   # docker-compose -p spring-mysql test up --build

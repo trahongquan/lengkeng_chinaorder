@@ -305,7 +305,7 @@ CREATE TABLE `image` (
   PRIMARY KEY (`id`),
   KEY `fk_variant_id_image_variant_idx` (`variant_id`),
   CONSTRAINT `fk_variant_id_image_variant` FOREIGN KEY (`variant_id`) REFERENCES `variants` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -314,7 +314,7 @@ CREATE TABLE `image` (
 
 LOCK TABLES `image` WRITE;
 /*!40000 ALTER TABLE `image` DISABLE KEYS */;
-INSERT INTO `image` VALUES (1,1,NULL,NULL,'images/products/2/1/N.jpg'),(2,1,NULL,NULL,'images/products/2/1/server.png'),(3,1,NULL,NULL,'images/products/2/1/testccc.jpg'),(4,1,NULL,NULL,'images/products/2/1/xxxx.jpg'),(11,3,NULL,NULL,'images/products/3/3/Logo.jpg'),(12,1,NULL,NULL,'images/products/2/1/1248279.jpg');
+INSERT INTO `image` VALUES (20,2,NULL,NULL,'products/2/2/wmQsZhsEwoh0cKD2wdT6BdeVe9a7CTNpSC31uQ4L.jpg'),(21,4,NULL,NULL,'products/7/4/hộp quẹt hình chó.jpg');
 /*!40000 ALTER TABLE `image` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -334,7 +334,7 @@ CREATE TABLE `imagebanner` (
   `buttonText` varchar(255) DEFAULT NULL,
   `active` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -343,7 +343,7 @@ CREATE TABLE `imagebanner` (
 
 LOCK TABLES `imagebanner` WRITE;
 /*!40000 ALTER TABLE `imagebanner` DISABLE KEYS */;
-INSERT INTO `imagebanner` VALUES (1,'banner-top','images/banner/banner-top/banner-1.jpg','Spring Collection','Adidas SS21','Shop Latest Adidas',1),(2,'banner-top','images/banner/banner-top/banner-2.jpg','Just Do it','Nike SS21','Shop Latest Nike',0),(3,'banner-top','images/banner/banner-top/banner-3.jpg','Look Good Feel Good','Sustainable Fashion','Why We Are Different',1),(4,'banner-top','images/banner/banner-top/banner-4.jpg','Spring Collection','Adidas SS21','Shop Latest Adidas',0),(5,'banner-top','images/banner/banner-top/banner-5.jpg','Just Do it','Nike SS21','Shop Latest Nike',1),(6,'banner-top','images/banner/banner-top/banner-6.jpg','Look Good Feel Good','Sustainable Fashion','Why We Are Different',0),(7,'banner-top','images/banner/banner-top/banner-7.jpg','Spring Collection','Adidas SS21','Shop Latest Adidas',1),(8,'banner-top','images/banner/banner-top/PXL_20230820_025535281.jpg','xxx','xxx','xxx',1);
+INSERT INTO `imagebanner` VALUES (1,'banner-top','banner/banner-top/banner-1.jpg','Spring Collection','Adidas SS21','Shop Latest Adidas',1),(2,'banner-top','banner/banner-top/banner-2.jpg','Just Do it','Nike SS21','Shop Latest Nike',0),(3,'banner-top','banner/banner-top/banner-3.jpg','Look Good Feel Good','Sustainable Fashion','Why We Are Different',1),(4,'banner-top','banner/banner-top/banner-4.jpg','Spring Collection','Adidas SS21','Shop Latest Adidas',0),(5,'banner-top','banner/banner-top/banner-5.jpg','Just Do it','Nike SS21','Shop Latest Nike',1),(6,'banner-top','banner/banner-top/banner-6.jpg','Look Good Feel Good','Sustainable Fashion','Why We Are Different',0),(7,'banner-top','banner/banner-top/banner-7.jpg','Spring Collection','Adidas SS21','Shop Latest Adidas',1),(9,'banner-top','banner/banner-top/banner-sale.jpg','winter','sub winter','shoping wear winter',1);
 /*!40000 ALTER TABLE `imagebanner` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -361,7 +361,7 @@ CREATE TABLE `imageproduct` (
   PRIMARY KEY (`id`),
   KEY `fk_productid_iamgeproduct_product_idx` (`productid`),
   CONSTRAINT `fk_productid_iamgeproduct_product` FOREIGN KEY (`productid`) REFERENCES `products` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -370,7 +370,7 @@ CREATE TABLE `imageproduct` (
 
 LOCK TABLES `imageproduct` WRITE;
 /*!40000 ALTER TABLE `imageproduct` DISABLE KEYS */;
-INSERT INTO `imageproduct` VALUES (3,3,'images/products/3/IP16PRM-gold.jpg'),(5,1,'images/products/1/AO DAI CACH TAN NAM RONG VANG (3).jpg'),(6,2,'images/products/2/wmQsZhsEwoh0cKD2wdT6BdeVe9a7CTNpSC31uQ4L.jpg'),(7,4,'images/products/4/abcd5499_copy_b09eb216f4554b00a8ad279de5b19e78_f501bba04e334364816166b9463afe7d_master.jpg'),(8,5,'images/products/5/dong-ho-trang-tri-13-500x500.jpg'),(9,6,'images/products/6/ổ cắm điện hình lỗ mũi.jpg'),(10,7,'images/products/7/hộp quẹt hình chó.jpg');
+INSERT INTO `imageproduct` VALUES (16,2,'products/2/wmQsZhsEwoh0cKD2wdT6BdeVe9a7CTNpSC31uQ4L.jpg'),(17,1,'products/1/AO DAI CACH TAN NAM RONG VANG (3).jpg'),(18,3,'products/3/IP16PRM-gold.jpg'),(19,4,'products/4/img_4447_8ad931492817448da81be16132fdfbaa.webp'),(20,5,'products/5/dong-ho-trang-tri-13-500x500.jpg'),(21,6,'products/6/ổ cắm điện hình lỗ mũi.jpg'),(22,7,'products/7/hộp quẹt hình chó.jpg');
 /*!40000 ALTER TABLE `imageproduct` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -747,7 +747,7 @@ CREATE TABLE `variants` (
   CONSTRAINT `fk_color_id_variant_colors` FOREIGN KEY (`color_id`) REFERENCES `colors` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_size_id_variant_sizes` FOREIGN KEY (`size_id`) REFERENCES `sizes` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `variants_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -756,7 +756,7 @@ CREATE TABLE `variants` (
 
 LOCK TABLES `variants` WRITE;
 /*!40000 ALTER TABLE `variants` DISABLE KEYS */;
-INSERT INTO `variants` VALUES (1,2,'TPN-AD-01XL-GR',5,2,250000,280000,11,0),(2,2,'TPN-AD-02XL-RD',5,1,250000,280000,8,0),(3,3,'IP16PRM',NULL,6,31000000,35000000,4,0);
+INSERT INTO `variants` VALUES (1,2,'TPN-AD-01XL-GR',5,2,250000,280000,11,0),(2,2,'TPN-AD-02XL-RD',5,1,250000,280000,8,0),(3,3,'IP16PRM',NULL,6,31000000,35000000,4,0),(4,7,'ĐĐL-HQ-M-WH',NULL,5,50000,100000,100,0);
 /*!40000 ALTER TABLE `variants` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -797,4 +797,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-05 15:30:41
+-- Dump completed on 2024-11-13 14:13:42

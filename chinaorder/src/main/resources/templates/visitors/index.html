@@ -90,7 +90,7 @@
                   <div th:each="banner, bannerStat : ${banners}" class="swiper-slide position-relative h-100 w-100">
                       <div class="w-100 h-100 overflow-hidden position-absolute z-index-1 top-0 start-0 end-0 bottom-0">
                           <div class="w-100 h-100 bg-img-cover bg-pos-center-center overflow-hidden" data-swiper-parallax="-100"
-                               th:style="'will-change: transform; background-image: url(' + ${banner.imgurl} + ')'">
+                               th:style="'will-change: transform; background-image: url(' + ${domain} + ${banner.imgurl} + ')'">
                           </div>
                       </div>
                       <div class="container position-relative z-index-10 d-flex h-100 align-items-start flex-column justify-content-center">

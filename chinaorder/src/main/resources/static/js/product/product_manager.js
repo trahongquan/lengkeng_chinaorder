@@ -48,14 +48,6 @@ $(document).ready(function () {
             $('#show_Image').show()
         }
 
-        function selectOptionById(elementId, valueToSelect) {
-            $('#' + elementId + ' option').each(function() {
-                if ($(this).text() === valueToSelect) {
-                    $(this).prop('selected', true);
-                }
-            });
-        }
-
     })
 })
 /*******************  Popup add image & button add image *********************/
@@ -76,7 +68,7 @@ $('#add_Image').click(function() {
 $(document).ready(function () {
     if($('#show_Image')) {
         // Hàm tạo các thẻ hình ảnh và thêm vào #card-body
-        function createImageProduct(imageProducts, product_id) {
+        function createImageProduct(imageProducts, product_id, domain) {
             var hasImage = false;
             var cardBody = $("#card-body");
             var image_for_product = [];
@@ -90,7 +82,7 @@ $(document).ready(function () {
             } else {
                 image_for_product.forEach(image => {
                     var img = $('<img>')
-                        .attr('src', '/' + image.imgurl)
+                        .attr('src', domain + image.imgurl)
                         .attr('data-product-id', product_id)
                         .addClass('product-image')
                         .css({
@@ -142,7 +134,7 @@ $(document).ready(function () {
                     top: '90%',
                     left: '65%',
                 })
-                .attr('href', '/Lengkeng/admin/products/delImage?url=' + encodePath(imgSrc.substring(1))+'&product_id='+product_id) // Thêm thuộc tính href
+                .attr('href', '/Lengkeng/admin/products/delImage?url=' + encodePath(imgSrc.split("/leng-keng/")[1])+'&product_id='+product_id) // Thêm thuộc tính href
                 .appendTo(overlay);
 
             delImageBtn.on('click', function(event) {
@@ -166,7 +158,7 @@ $(document).ready(function () {
         $("#show_Image").click(function() {
             var product_id = $(this).attr('data-product-id');
             $("#card-body").empty();
-            createImageProduct(imageProducts,product_id);
+            createImageProduct(imageProducts,product_id, domain);
             $(".popup-image").slideDown(300);
         });
         $(window).click(function(event) {

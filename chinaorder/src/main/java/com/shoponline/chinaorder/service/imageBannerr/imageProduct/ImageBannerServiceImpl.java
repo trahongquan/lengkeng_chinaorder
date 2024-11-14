@@ -27,7 +27,18 @@ public class ImageBannerServiceImpl implements ImageBannerService {
 
     @Override
     public ImageBanner createImageBanner(ImageBanner imageBanner) {
-        return imageBannerRepository.save(imageBanner);
+        if(imageBanner.getId() != 0){
+            return imageBannerRepository.save(new ImageBanner(
+                    imageBanner.getType(),
+                    imageBanner.getImgurl(),
+                    imageBanner.getTitle(),
+                    imageBanner.getSubtitle(),
+                    imageBanner.getButtonText(),
+                    imageBanner.getActive()
+            ));
+        } else {
+            return imageBannerRepository.save(imageBanner);
+        }
     }
 
     @Override

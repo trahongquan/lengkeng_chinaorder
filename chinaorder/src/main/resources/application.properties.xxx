@@ -34,3 +34,7 @@ spring.jpa.properties.hibernate.generate_statistics=false
 spring.mvc.dispatch-options-request=true
 
 
+minio.url=http://minio-container:9000
+minio.accessKey=minioadmin
+minio.secretKey=minioadmin123
+minio.bucketName=leng-keng

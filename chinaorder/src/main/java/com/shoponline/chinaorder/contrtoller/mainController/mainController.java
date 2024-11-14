@@ -1,5 +1,6 @@
 package com.shoponline.chinaorder.contrtoller.mainController;
 
+import com.shoponline.chinaorder.config.minioConfig.MinioService;
 import com.shoponline.chinaorder.dto.ProductCategory;
 import com.shoponline.chinaorder.entity.*;
 import com.shoponline.chinaorder.service.attribute.AttributeService;
@@ -38,14 +39,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.Min;
-import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/Lengkeng")
@@ -77,9 +77,10 @@ public class mainController {
     private final UnitService unitService;
     private final VariantService variantService;
     private final VoucherService voucherService;
+    private MinioService minioService;
 
     @Autowired
-    public mainController(AuthorityService authorityService, UserService userService, BrandService brandService, CartService cartService, CategoryService categoryService, ColorService colorService, CommuneService communeService, DistrictService districtService, ImageService imageService, ImageProductService imageProductService, ImageBannerService imageBannerService, LogsService logsService, OrdersService ordersService, OrderItemService orderItemService, PeopleService peopleService, ProductService productService, ProvinceService provinceService, ReviewService reviewService, SizeService sizeService, AttributeService attributeService, AttributeValueService attributeValueService, StatusService statusService, SupplierService supplierService, UnitService unitService, VariantService variantService, VoucherService voucherService) {
+    public mainController(AuthorityService authorityService, UserService userService, BrandService brandService, CartService cartService, CategoryService categoryService, ColorService colorService, CommuneService communeService, DistrictService districtService, ImageService imageService, ImageProductService imageProductService, ImageBannerService imageBannerService, LogsService logsService, OrdersService ordersService, OrderItemService orderItemService, PeopleService peopleService, ProductService productService, ProvinceService provinceService, ReviewService reviewService, SizeService sizeService, AttributeService attributeService, AttributeValueService attributeValueService, StatusService statusService, SupplierService supplierService, UnitService unitService, VariantService variantService, VoucherService voucherService, MinioService minioService) {
         this.authorityService = authorityService;
         this.userService = userService;
         this.brandService = brandService;
@@ -106,9 +107,17 @@ public class mainController {
         this.unitService = unitService;
         this.variantService = variantService;
         this.voucherService = voucherService;
+        this.minioService = minioService;
     }
 
     String template = "layout";
+    /** dùng chạy container minio trên local */
+    String domain = "http://localhost:9000/leng-keng/";
+    /** dùng chạy docker-compose trên local */
+//    String domain = "http://minio-container:9000/leng-keng/";
+    /** Dùng cho server internet */
+//    String domain = "http://chinaorder.site:9000/leng-keng/";
+
     public String Redirect(String url, Object success) {
         if (success instanceof Boolean) {
             if((boolean) success){
@@ -144,6 +153,7 @@ public class mainController {
             if((authority.equals(RoleSystem.ROLE_ADMIN) || authority.equals(RoleSystem.ROLE_MANAGER))) return Redirect("/admin/dashboard","");
         }
         model.addAttribute("banners", imageBannerService.getAllImageBannersActive());
+        model.addAttribute("domain", domain);
         return "visitors/index";
     }
     @GetMapping("/accouunt")
@@ -156,6 +166,8 @@ public class mainController {
     }
     @GetMapping("/category")
     public String category(Model model){
+//        ProductCategory mockProductCategory = mock(ProductCategory.class);
+//        when(mockProductCategory.getProduct().getCategory().getId()).thenReturn(Integer.valueOf(1));
         List<ImageProduct> imageProducts = imageProductService.getAllImageProducts();
         Map<Integer, ImageProduct> uniqueImageProductMap = new HashMap<>();
         for (ImageProduct imageProduct : imageProducts) {
@@ -186,7 +198,13 @@ public class mainController {
             });
         });
 
-        model.addAttribute("productCategories", productCategories);
+        Map<Integer, List<ProductCategory>> groupedByCategory = productCategories.stream()
+                .collect(Collectors.groupingBy(pC -> pC.getProduct().getCategory().getId()));
+
+        List<List<ProductCategory>> allGroupedCategories = new ArrayList<>(groupedByCategory.values());
+
+        model.addAttribute("allGroupedCategories", allGroupedCategories);
+        model.addAttribute("domain", domain);
         return "visitors/category";
     }
     @GetMapping("/product")
@@ -259,7 +277,7 @@ public class mainController {
 
     @PostMapping({"/admin/suppliers/del"})
     public String Suppliers_Del(Model model,
-                                @RequestParam("id") @Min(1) int supplier_id){
+                                @RequestParam("id") int supplier_id){
         try{
             supplierService.deleteSupplier(supplier_id);
             return Redirect("/admin/suppliers", true);
@@ -306,7 +324,7 @@ public class mainController {
 
     @PostMapping({"/admin/brands/del"})
     public String Brands_Del(Model model,
-                             @RequestParam("id") @Min(1) int brand_id){
+                             @RequestParam("id") int brand_id){
         try{
             brandService.deleteBrand(brand_id);
             return Redirect("/admin/brands", true);
@@ -368,7 +386,7 @@ public class mainController {
 
     @PostMapping({"/admin/categories/del"})
     public String Categories_Del(Model model,
-                                 @RequestParam("id") @Min(1) int category_id){
+                                 @RequestParam("id") int category_id){
         try{
             categoryService.deleteCategory(category_id);
             return Redirect("/admin/categories", true);
@@ -430,7 +448,7 @@ public class mainController {
 
     @PostMapping({"/admin/units/del"})
     public String Units_Del(Model model,
-                            @RequestParam("id") @Min(1) int unit_id){
+                            @RequestParam("id") int unit_id){
         try{
             unitService.deleteUnit(unit_id);
             return Redirect("/admin/units", true);
@@ -490,7 +508,7 @@ public class mainController {
 
     @PostMapping({"/admin/sizes/del"})
     public String sizes_Del(Model model,
-                            @RequestParam("id") @Min(1) int size_id){
+                            @RequestParam("id") int size_id){
         try{
             sizeService.deleteSize(size_id);
             return Redirect("/admin/sizes", true);
@@ -548,7 +566,7 @@ public class mainController {
     }
     @PostMapping({"/admin/attributes/del"})
     public String attributes_Del(Model model,
-                                 @RequestParam("id") @Min(1) int attribute_id){
+                                 @RequestParam("id") int attribute_id){
         try{
             attributeService.deleteAttribute(attribute_id);
             return Redirect("/admin/attributes", true);
@@ -608,7 +626,7 @@ public class mainController {
 
     @PostMapping({"/admin/status/del"})
     public String status_Del(Model model,
-                             @RequestParam("id") @Min(1) int status_id){
+                             @RequestParam("id") int status_id){
         try{
             statusService.deleteStatus(status_id);
             return Redirect("/admin/status", true);
@@ -669,7 +687,7 @@ public class mainController {
 
     @PostMapping({"/admin/colors/del"})
     public String colors_Del(Model model,
-                             @RequestParam("id") @Min(1) int color_id){
+                             @RequestParam("id")  int color_id){
         try{
             colorService.deleteColor(color_id);
             return Redirect("/admin/colors", true);
@@ -709,7 +727,7 @@ public class mainController {
                            @RequestParam(value = "success", defaultValue = "false") boolean success,
                            @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
         List<ImageBanner> imageBanners = imageBannerService.getAllImageBanners();
-
+        model.addAttribute("domain", domain);
         model.addAttribute("imageBanners", imageBanners);
 
         model.addAttribute("content", "pages/support/bannertop");
@@ -724,51 +742,37 @@ public class mainController {
     public String bannertop_Add(Model model, Principal principal,
                              @ModelAttribute ImageBanner imageBanner,
                              @RequestParam("file") MultipartFile file) {
-        String UPLOAD_DIR_NEW = "images/banner";
-        String NEW_FOLDER = "banner-top";
-            try {
-                String filePath = UPLOAD_DIR_NEW + "/" + NEW_FOLDER + "/" + file.getOriginalFilename();
-                file.transferTo(new File(filePath));
-                imageBanner.setImgurl(filePath);
-                imageBanner.setType("banner-top");
-                imageBannerService.createImageBanner(new ImageBanner(imageBanner.getType(), imageBanner.getImgurl(), imageBanner.getTitle(), imageBanner.getSubtitle(), imageBanner.getButtonText(), imageBanner.getActive()));
-                System.out.println(imageBanner);
-                System.out.println(filePath);
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-                return Redirect("/admin/bannertop/?username=" + principal.getName(), false);
-            }
+        String fullPath = "banner/banner-top/";
+        String fullPathName = fullPath + file.getOriginalFilename();
+        try {
+            minioService.uploadFile(fullPathName, file.getInputStream(), file.getContentType());
+            imageBanner.setImgurl(fullPathName);
+            imageBanner.setType("banner-top");
+            imageBannerService.createImageBanner(imageBanner);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return Redirect("/admin/bannertop/?username=" + principal.getName(), false);
+        }
         return Redirect("/admin/bannertop/?username=" + principal.getName(), true);
     }
 
     @GetMapping("/admin/bannertop/del/{id}")
     public String bannertop_del(Model model, Principal principal,
-                                @PathVariable("id")  @Min(1) int id,
+                                @PathVariable("id")   int id,
                                 @RequestParam(value = "success", defaultValue = "false") boolean success,
                                 @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
         ImageBanner imageBanner = imageBannerService.findImageBannerById(id);
         String filePath = imageBanner.getImgurl();
         try {
-            File file = new File(UPLOAD_DIR + filePath);
-            System.out.println(UPLOAD_DIR + "/"+ filePath);
-            if (file.exists()) {
-                if (file.delete()) {
-                    System.out.println("File deleted successfully.");
-                    List<ImageBanner> imageBanners = imageBannerService.findImagesByUrl(filePath);
-                    imageBanners.forEach(i->imageBannerService.deleteImageBanner(i.getId()));
-                    return Redirect("/admin/bannertop/?username=" + principal.getName(), true); // Xóa thành công
-                } else {
-                    System.out.println("Failed to delete file.");
-                }
-            } else {
-                System.out.println("File not found.");
-            }
+            minioService.deleteFile(filePath);
+            List<ImageBanner> imageBanners = imageBannerService.findImagesByUrl(filePath);
+            imageBanners.forEach(i->imageBannerService.deleteImageBanner(i.getId()));
         } catch (Exception e) {
             // Bắt mọi ngoại lệ
             e.printStackTrace(); // In thông tin lỗi ra console để debug
             return Redirect("/admin/bannertop/?username=" + principal.getName(), false); // Xóa thất bại
         }
-        return Redirect("/admin/bannertop/?username=" + principal.getName(), false); // Xóa thất bại
+        return Redirect("/admin/bannertop/?username=" + principal.getName(), true); // Xóa thành công
     }
 
     /***************************************************/
@@ -822,23 +826,20 @@ public class mainController {
     public String products_uploadFiles(@RequestParam("files") MultipartFile[] files,
                                        @RequestParam("product_id") int product_id,
                                        Principal principal) {
-        String UPLOAD_DIR_NEW = "images/products";
-        String NEW_FOLDER = product_id + "";
-        String productDir = UPLOAD_DIR + "/images/products/" + NEW_FOLDER;
-        File productDirFile = new File(productDir);
-        if (!productDirFile.exists()) productDirFile.mkdirs();
-
+        String fullPath = "products/" + product_id + "/";
         for (MultipartFile file : files) {
             if (file.isEmpty()) continue;
+            String fullPathName = fullPath + file.getOriginalFilename();
             try {
-                String filePath = UPLOAD_DIR_NEW + "/" + NEW_FOLDER + "/" + file.getOriginalFilename();
-                file.transferTo(new File(filePath));
                 Products product = productService.findProductById(product_id);
-                imageProductService.createImageProduct(new ImageProduct(product, filePath));
-                System.out.println(filePath);
-            } catch (IOException e) {
+                imageProductService.createImageProduct(new ImageProduct(product, fullPathName));
+                System.out.println(fullPathName);
+                minioService.uploadFile(fullPathName, file.getInputStream(), file.getContentType());
+//                model.addAttribute("message", "File uploaded successfully");
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
                 return Redirect("/admin/products/?username=" + principal.getName(), false);
+//                model.addAttribute("error", "Error uploading file: " + e.getMessage());
             }
         }
         return Redirect("/admin/products/?username=" + principal.getName(), true);
@@ -850,29 +851,18 @@ public class mainController {
                                     @RequestParam(value = "success", defaultValue = "false") boolean success,
                                     @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
         String originalImgUrl = PathEncoderDecoder.decodePath(imgUrl);
-        int startIndex = originalImgUrl.indexOf("products") + "products".length();
-        String resultFile = originalImgUrl.substring(startIndex);
-        String filePath = UPLOAD_DIR + "/images/products/"+ resultFile;
+//        int startIndex = originalImgUrl.indexOf("products") + "products".length();
+//        String resultFile = originalImgUrl.substring(startIndex);
         try {
-            File file = new File(filePath);
-            if (file.exists()) {
-                if (file.delete()) {
-                    System.out.println("File deleted successfully.");
-                    List<ImageProduct> imageProducts = imageProductService.findImagesByUrl(originalImgUrl);
-                    imageProducts.forEach(i->imageProductService.deleteImageProduct(i.getId()));
-                    return Redirect("/admin/products/?username=" + principal.getName(), true); // Xóa thành công
-                } else {
-                    System.out.println("Failed to delete file.");
-                }
-            } else {
-                System.out.println("File not found.");
-            }
+            minioService.deleteFile(originalImgUrl);
+            List<ImageProduct> imageProducts = imageProductService.findImagesByUrl(originalImgUrl);
+            imageProducts.forEach(i->imageProductService.deleteImageProduct(i.getId()));
         } catch (Exception e) {
             // Bắt mọi ngoại lệ
             e.printStackTrace(); // In thông tin lỗi ra console để debug
             return Redirect("/admin/products/?username=" + principal.getName(), false); // Xóa thất bại
         }
-        return Redirect("/admin/products/detail/" + id, false);
+        return Redirect("/admin/products/?username=" + principal.getName(), true); // Xóa thành công
     }
 
 
@@ -883,10 +873,11 @@ public class mainController {
                                  @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
         Products product = productService.findProductById(id);
         List<Variants> variants = variantService.FindAllByProduct(product);
+//        minioService.listFileVariants();
+        model.addAttribute("images", imageService.getAllImages());
         model.addAttribute("attributeValues", attributeValueService.findAllByProduct(product));
         model.addAttribute("product", product);
         model.addAttribute("variants", variants);
-        model.addAttribute("images", imageService.getAllImages());
         model.addAttribute("colors", colorService.getAllColors());
         model.addAttribute("sizes", sizeService.getAllSizes());
         model.addAttribute("attributes", attributeService.getAllAttribute());
@@ -921,35 +912,31 @@ public class mainController {
                 attributeValues.add(new AttributeValue(attributeService.findAttributeById(attribute_ids.get(i)), product, values.get(i)));
             }
             attributeValues.forEach(a -> attributeValueService.createAttributeValue(a));
-            return Redirect("/admin/products/detail/"+ product_id, true);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Lỗi: " + e.getMessage());
             return Redirect("/admin/products/detail/"+product_id, false);
         }
+        return Redirect("/admin/products/detail/"+ product_id, true);
     }
-    String UPLOAD_DIR = "src/main/resources/static";
     @PostMapping("/admin/products/detail/uploadImage")
     public String uploadFiles(@RequestParam("files") MultipartFile[] files,
                               @RequestParam("product_id") int product_id,
                               @RequestParam("variant_id") int variant_id) {
-        String UPLOAD_DIR_NEW = "images/products";
-        String NEW_FOLDER = product_id + "/" + variant_id;
-        String productDir = UPLOAD_DIR + "/images/products/" + NEW_FOLDER;
-        File productDirFile = new File(productDir);
-        if (!productDirFile.exists()) {
-            productDirFile.mkdirs();
-        }
+        String fullPath = "products/" + product_id + "/" + variant_id + "/";
         for (MultipartFile file : files) {
             if (file.isEmpty()) continue;
+            String fullPathName = fullPath + file.getOriginalFilename();
             try {
-                String filePath = UPLOAD_DIR_NEW + "/" + NEW_FOLDER + "/" + file.getOriginalFilename();
-                file.transferTo(new File(filePath));
                 Variants variant = variantService.findVariantById(variant_id);
-                imageService.createImage(new Image(variant, filePath));
-            } catch (IOException e) {
+                imageService.createImage(new Image(variant, fullPathName));
+                System.out.println(fullPathName);
+                minioService.uploadFile(fullPathName, file.getInputStream(), file.getContentType());
+//                model.addAttribute("message", "File uploaded successfully");
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
                 return Redirect("/admin/products/detail/" + product_id, false);
+//                model.addAttribute("error", "Error uploading file: " + e.getMessage());
             }
         }
         return Redirect("/admin/products/detail/" + product_id, true);
@@ -961,33 +948,16 @@ public class mainController {
                            @RequestParam(value = "success", defaultValue = "false") boolean success,
                            @RequestParam(value = "unsuccess", defaultValue = "false") boolean unsuccess) {
         String originalImgUrl = PathEncoderDecoder.decodePath(imgUrl);
-        System.out.println(originalImgUrl);
-        int startIndex = originalImgUrl.indexOf("products") + "products".length();
-        String resultFile = originalImgUrl.substring(startIndex);
-        String filePath = UPLOAD_DIR + "/images/products/" +resultFile;
-        /** thêm phần System.currentTimeMillis()
-         * Bằng cách thêm một tham số thời gian vào cuối đường dẫn hình ảnh,
-         * mỗi lần tải lại trang, đường dẫn sẽ khác đi và buộc trình duyệt phải tải lại hình ảnh từ server.*/
         try {
-            File file = new File(filePath);
-            if (file.exists()) {
-                if (file.delete()) {
-                    System.out.println("File deleted successfully.");
-                    List<Image> images = imageService.findImagesByUrl(originalImgUrl);
-                    images.forEach(i->imageService.deleteImage(i.getId()));
-                    return Redirect("/admin/products/detail/" + id, true); // Xóa thành công
-                } else {
-                    System.out.println("Failed to delete file.");
-                }
-            } else {
-                System.out.println("File not found.");
-            }
+            minioService.deleteFile(originalImgUrl);
+            List<Image> images = imageService.findImagesByUrl(originalImgUrl);
+            images.forEach(i->imageService.deleteImage(i.getId()));
         } catch (Exception e) {
             // Bắt mọi ngoại lệ
             e.printStackTrace(); // In thông tin lỗi ra console để debug
             return Redirect("/admin/products/detail/" + id, false); // Xóa thất bại
         }
-        return Redirect("/admin/products/detail/" + id, false);
+        return Redirect("/admin/products/detail/" + id, true); // Xóa thành công
     }
 
     /***************************************************/
