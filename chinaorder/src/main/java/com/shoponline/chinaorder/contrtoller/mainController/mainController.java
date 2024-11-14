@@ -111,9 +111,13 @@ public class mainController {
     }
 
     String template = "layout";
-//    String domain = "http://minio-container:9000/leng-keng/"; /** dùng chạy docker-compose trên local */
-//    String domain = "http://localhost:9000/leng-keng/"; /** dùng chạy container minio trên local */
-    String domain = "http://chinaorder.site:9000/leng-keng/";
+    /** dùng chạy container minio trên local */
+    String domain = "http://localhost:9000/leng-keng/";
+    /** dùng chạy docker-compose trên local */
+//    String domain = "http://minio-container:9000/leng-keng/";
+    /** Dùng cho server internet */
+//    String domain = "http://chinaorder.site:9000/leng-keng/";
+
     public String Redirect(String url, Object success) {
         if (success instanceof Boolean) {
             if((boolean) success){
